@@ -53,6 +53,11 @@ service cloud.firestore {
       allow delete: if false;
     }
     
+    // Organizations collection - admin only
+    match /organizations/{organizationId} {
+      allow read, write: if isAdmin();
+    }
+    
     // Admin-only collections for analytics (if needed in future)
     match /analytics/{document=**} {
       allow read, write: if isAdmin();

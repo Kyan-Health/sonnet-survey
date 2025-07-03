@@ -154,6 +154,12 @@ export default function AdminDashboard() {
             
             <div className="space-x-2">
               <Link
+                href="/admin/organizations"
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Manage Organizations
+              </Link>
+              <Link
                 href="/admin/users"
                 className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded"
               >

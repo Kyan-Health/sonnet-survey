@@ -9,7 +9,9 @@ export interface Organization {
     customBranding?: boolean;
   };
   createdAt: Date;
+  updatedAt: Date;
   isActive: boolean;
+  createdBy: string; // UID of admin who created it
 }
 
 export interface OrganizationUser {
@@ -20,15 +22,9 @@ export interface OrganizationUser {
   joinedAt: Date;
 }
 
-// Domain to Organization mapping
-export const ORGANIZATION_DOMAINS: Record<string, string> = {
-  'kyanhealth.com': 'kyan-health',
-  'example.com': 'example-org',
-  // Add more domains as needed
-};
-
-export const ORGANIZATIONS: Record<string, Organization> = {
-  'kyan-health': {
+// For backward compatibility during migration
+export const DEFAULT_ORGANIZATIONS: Organization[] = [
+  {
     id: 'kyan-health',
     name: 'Kyan Health',
     domain: 'kyanhealth.com',
@@ -38,28 +34,8 @@ export const ORGANIZATIONS: Record<string, Organization> = {
       customBranding: true,
     },
     createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01'),
     isActive: true,
-  },
-  'example-org': {
-    id: 'example-org',
-    name: 'Example Organization',
-    domain: 'example.com',
-    displayName: 'Example Corp',
-    settings: {
-      primaryColor: '#10B981',
-      customBranding: false,
-    },
-    createdAt: new Date('2024-01-01'),
-    isActive: true,
-  },
-};
-
-export function getOrganizationFromEmail(email: string): Organization | null {
-  const domain = email.split('@')[1];
-  const orgId = ORGANIZATION_DOMAINS[domain];
-  return orgId ? ORGANIZATIONS[orgId] : null;
-}
-
-export function getAllActiveOrganizations(): Organization[] {
-  return Object.values(ORGANIZATIONS).filter(org => org.isActive);
-}
+    createdBy: 'system'
+  }
+];

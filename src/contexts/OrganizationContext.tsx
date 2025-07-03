@@ -2,7 +2,11 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
-import { Organization, getOrganizationFromEmail, getAllActiveOrganizations } from '@/types/organization';
+import { Organization } from '@/types/organization';
+import { 
+  getOrganizationFromEmail, 
+  getActiveOrganizations 
+} from '@/lib/organizationService';
 
 interface OrganizationContextType {
   currentOrganization: Organization | null;
@@ -36,7 +40,7 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
 
       try {
         // Get user's organization from email domain
-        const userOrg = getOrganizationFromEmail(user.email);
+        const userOrg = await getOrganizationFromEmail(user.email);
         setCurrentOrganization(userOrg);
 
         // Check if user is admin
@@ -46,7 +50,7 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
 
         // If admin, show all organizations; otherwise just user's org
         if (isUserAdmin) {
-          const allOrgs = getAllActiveOrganizations();
+          const allOrgs = await getActiveOrganizations();
           setAvailableOrganizations(allOrgs);
           // Default to user's org if available, otherwise first org
           setSelectedOrganization(userOrg || allOrgs[0] || null);
