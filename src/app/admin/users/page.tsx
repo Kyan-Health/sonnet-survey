@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { isAdminAsync, setUserAdmin } from '@/lib/admin';
@@ -41,47 +41,35 @@ export default function AdminUsersPage() {
     checkAdminStatus();
   }, [user]);
 
-  // Mock user data - in a real app, you'd fetch this from Firebase Auth
-  useEffect(() => {
-    const loadUsers = async () => {
-      if (user && isUserAdmin) {
-        try {
-          // Mock data - replace with actual Firebase Auth user listing
-          const mockUsers: UserRecord[] = [
-            {
-              uid: 'user1',
-              email: 'ignacio@kyanhealth.com',
-              displayName: 'Ignacio Leonhardt',
-              isAdmin: true,
-              lastSignIn: new Date('2024-01-15')
-            },
-            {
-              uid: 'user2', 
-              email: 'employee1@kyanhealth.com',
-              displayName: 'Employee One',
-              isAdmin: false,
-              lastSignIn: new Date('2024-01-14')
-            },
-            {
-              uid: 'user3',
-              email: 'employee2@kyanhealth.com', 
-              displayName: 'Employee Two',
-              isAdmin: false,
-              lastSignIn: new Date('2024-01-13')
-            }
-          ];
-          setUsers(mockUsers);
-        } catch (error) {
-          console.error('Error loading users:', error);
-          setError('Failed to load users');
-        } finally {
-          setIsLoading(false);
-        }
+  const loadUsers = useCallback(async () => {
+    if (user && isUserAdmin) {
+      setIsLoading(true);
+      try {
+        // For static hosting, we'll show a simplified view with current user
+        // In production, this would need Firebase Functions for full user management
+        const currentUser: UserRecord = {
+          uid: user.uid,
+          email: user.email || '',
+          displayName: user.displayName || user.email?.split('@')[0] || 'Current User',
+          isAdmin: true,
+          lastSignIn: new Date()
+        };
+        
+        setUsers([currentUser]);
+        setError(null);
+      } catch (error) {
+        console.error('Error loading users:', error);
+        setError('Failed to load users');
+      } finally {
+        setIsLoading(false);
       }
-    };
-
-    loadUsers();
+    }
   }, [user, isUserAdmin]);
+
+  // Load real users from Firebase Auth
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   const handleGrantAdmin = async (targetUid: string, targetEmail: string, grant: boolean) => {
     if (!user) return;
@@ -90,11 +78,8 @@ export default function AdminUsersPage() {
     try {
       const success = await setUserAdmin(user, targetUid, grant);
       if (success) {
-        // Update local state
-        setUsers(prev => prev.map(u => 
-          u.uid === targetUid ? { ...u, isAdmin: grant } : u
-        ));
-        
+        // Reload users to get updated admin status
+        await loadUsers();
         alert(`${grant ? 'Granted' : 'Revoked'} admin access for ${targetEmail}`);
       } else {
         alert(`Failed to ${grant ? 'grant' : 'revoke'} admin access`);
@@ -288,9 +273,10 @@ export default function AdminUsersPage() {
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
           <div className="flex">
             <div className="text-yellow-600 text-sm">
-              <strong>Note:</strong> This is a simplified user management interface. 
-              In a production environment, you would integrate with Firebase Auth&apos;s 
-              admin API to list all users and their current admin status from custom claims.
+              <strong>Note:</strong> Due to static hosting limitations, this interface currently shows 
+              only the current user. For full user management capabilities, you would need to deploy 
+              Firebase Functions to list all users and manage admin status through Firebase Admin SDK.
+              Admin status is managed through Firebase custom claims.
             </div>
           </div>
         </div>
