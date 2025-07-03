@@ -57,7 +57,7 @@ export default function AdminUsersPage() {
       setIsLoading(true);
       try {
         const idToken = await user.getIdToken();
-        const response = await fetch('https://us-central1-survey-sonnet.cloudfunctions.net/listUsers', {
+        const response = await fetch('https://europe-west1-survey-sonnet.cloudfunctions.net/listUsers', {
           headers: {
             'Authorization': `Bearer ${idToken}`,
           },

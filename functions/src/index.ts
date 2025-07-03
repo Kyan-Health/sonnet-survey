@@ -23,7 +23,7 @@ async function verifyAdminAccess(idToken: string): Promise<admin.auth.DecodedIdT
 /**
  * List all @kyanhealth.com users
  */
-export const listUsers = functions.https.onRequest(async (req, res) => {
+export const listUsers = functions.region('europe-west1').https.onRequest(async (req, res) => {
   // Set CORS headers
   res.set('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -82,7 +82,7 @@ export const listUsers = functions.https.onRequest(async (req, res) => {
 /**
  * Set admin claims for a user
  */
-export const setAdminClaims = functions.https.onRequest(async (req, res) => {
+export const setAdminClaims = functions.region('europe-west1').https.onRequest(async (req, res) => {
   // Set CORS headers
   res.set('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
