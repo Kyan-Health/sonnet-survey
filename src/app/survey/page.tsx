@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { useOrganization } from '@/contexts/OrganizationContext';
 import { 
   SURVEY_FACTORS, 
   RATING_LABELS, 
@@ -15,6 +16,7 @@ import DemographicForm from '@/components/DemographicForm';
 
 export default function SurveyPage() {
   const { user } = useAuth();
+  const { currentOrganization } = useOrganization();
   const [currentStep, setCurrentStep] = useState<'demographics' | 'survey'>('demographics');
   const [currentFactor, setCurrentFactor] = useState(0);
   const [responses, setResponses] = useState<{ [questionId: string]: number }>({});
@@ -51,7 +53,7 @@ export default function SurveyPage() {
   };
 
   const handleSubmit = async () => {
-    if (!user || !demographics) return;
+    if (!user || !demographics || !currentOrganization) return;
     
     setIsSubmitting(true);
     
@@ -61,7 +63,14 @@ export default function SurveyPage() {
         rating
       }));
 
-      await submitSurvey(user.uid, user.email!, surveyResponses, demographics);
+      await submitSurvey(
+        user.uid, 
+        user.email!, 
+        surveyResponses, 
+        demographics,
+        currentOrganization.id,
+        currentOrganization.name
+      );
       setHasCompleted(true);
     } catch (error) {
       console.error('Error submitting survey:', error);

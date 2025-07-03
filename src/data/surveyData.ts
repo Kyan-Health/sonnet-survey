@@ -21,6 +21,8 @@ export interface DemographicResponse {
 export interface CompletedSurvey {
   userId: string;
   userEmail: string;
+  organizationId: string;
+  organizationName: string;
   responses: SurveyResponse[];
   demographics: DemographicResponse;
   completedAt: Date;

@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { useOrganization } from '@/contexts/OrganizationContext';
 import { isAdminAsync } from '@/lib/admin';
 import { getSurveyAnalytics, getScoreCategory, SurveyAnalytics } from '@/lib/analytics';
+import OrganizationSelector from '@/components/OrganizationSelector';
 
 export default function AdminDashboard() {
   const { user, loading } = useAuth();
+  const { selectedOrganization } = useOrganization();
   const [analytics, setAnalytics] = useState<SurveyAnalytics | null>(null);
   const [isLoadingAnalytics, setIsLoadingAnalytics] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +40,10 @@ export default function AdminDashboard() {
     const loadAnalytics = async () => {
       if (user && isUserAdmin) {
         try {
-          const data = await getSurveyAnalytics();
+          setIsLoadingAnalytics(true);
+          setError(null);
+          // Pass organization ID to analytics function (null for all organizations)
+          const data = await getSurveyAnalytics(selectedOrganization?.id);
           setAnalytics(data);
         } catch (error) {
           console.error('Error loading analytics:', error);
@@ -49,7 +55,7 @@ export default function AdminDashboard() {
     };
 
     loadAnalytics();
-  }, [user, isUserAdmin]);
+  }, [user, isUserAdmin, selectedOrganization]);
 
   if (loading || isCheckingAdmin) {
     return (
@@ -131,7 +137,7 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-start">
-            <div>
+            <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Survey Analytics Dashboard</h1>
               <p className="text-gray-600">
                 Employee experience survey results and analytics
@@ -140,6 +146,12 @@ export default function AdminDashboard() {
                 Last updated: {analytics.lastUpdated.toLocaleDateString()} at {analytics.lastUpdated.toLocaleTimeString()}
               </p>
             </div>
+            
+            {/* Organization Filter */}
+            <div className="mx-6 min-w-64">
+              <OrganizationSelector />
+            </div>
+            
             <div className="space-x-2">
               <Link
                 href="/admin/users"

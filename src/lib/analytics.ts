@@ -1,4 +1,4 @@
-import { getSurveyResponses } from './surveyService';
+import { getSurveyResponsesByOrganization } from './surveyService';
 import { SURVEY_QUESTIONS, SURVEY_FACTORS, getQuestionsByFactor, CompletedSurvey, DEMOGRAPHIC_QUESTIONS } from '@/data/surveyData';
 
 export interface FactorAnalysis {
@@ -159,9 +159,9 @@ function analyzeDemographics(allResponses: CompletedSurvey[]): SurveyAnalytics['
   return demographics;
 }
 
-export async function getSurveyAnalytics(): Promise<SurveyAnalytics> {
+export async function getSurveyAnalytics(organizationId?: string): Promise<SurveyAnalytics> {
   try {
-    const allResponses = await getSurveyResponses();
+    const allResponses = await getSurveyResponsesByOrganization(organizationId);
     
     // Filter out responses that don't have the new demographic structure
     const validResponses = allResponses.filter(response => 
