@@ -42,8 +42,8 @@ export default function AdminDashboard() {
         try {
           setIsLoadingAnalytics(true);
           setError(null);
-          // Pass organization ID to analytics function (null for all organizations)
-          const data = await getSurveyAnalytics(selectedOrganization?.id);
+          // Pass organization ID and name to analytics function (null for all organizations)
+          const data = await getSurveyAnalytics(selectedOrganization?.id, selectedOrganization?.displayName);
           setAnalytics(data);
         } catch (error) {
           console.error('Error loading analytics:', error);

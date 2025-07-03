@@ -5,6 +5,13 @@ export interface SurveyQuestion {
   question: string;
 }
 
+export interface SurveyQuestionTemplate {
+  id: string;
+  factor: string;
+  subFactor?: string;
+  questionTemplate: string; // Template with {organization} placeholder
+}
+
 export interface SurveyResponse {
   questionId: string;
   rating: number; // 1-5 scale
@@ -32,213 +39,213 @@ export interface CompletedSurvey {
   sessionId: string;
 }
 
-export const SURVEY_QUESTIONS: SurveyQuestion[] = [
+export const SURVEY_QUESTION_TEMPLATES: SurveyQuestionTemplate[] = [
   // Happiness
   {
     id: "happiness_1",
     factor: "Happiness",
-    question: "I often experience positive emotions when I am working (e.g., happiness, enthusiasm, enjoyment)."
+    questionTemplate: "I often experience positive emotions when I am working (e.g., happiness, enthusiasm, enjoyment)."
   },
   {
     id: "happiness_2",
     factor: "Happiness",
-    question: "I am passionate about the work I do."
+    questionTemplate: "I am passionate about the work I do."
   },
   {
     id: "happiness_3",
     factor: "Happiness",
-    question: "On most days, time goes by quickly when I'm working."
+    questionTemplate: "On most days, time goes by quickly when I'm working."
   },
   {
     id: "happiness_4",
     factor: "Happiness",
-    question: "I feel a strong sense of belonging to On."
+    questionTemplate: "I feel a strong sense of belonging to {organization}."
   },
   {
     id: "happiness_5",
     factor: "Happiness",
-    question: "I would recommend On as a great place to work."
+    questionTemplate: "I would recommend {organization} as a great place to work."
   },
 
-  // On's Senior Leadership
+  // Leadership
   {
     id: "leadership_1",
-    factor: "On's Senior Leadership",
-    question: "I have confidence in On's Senior Leadership."
+    factor: "Leadership",
+    questionTemplate: "I have confidence in {organization}'s Senior Leadership."
   },
   {
     id: "leadership_2",
-    factor: "On's Senior Leadership",
-    question: "On's Senior Leadership has communicated a vision that motivates me."
+    factor: "Leadership",
+    questionTemplate: "{organization}'s Senior Leadership has communicated a vision that motivates me."
   },
   {
     id: "leadership_3",
-    factor: "On's Senior Leadership",
-    question: "On's Senior Leadership demonstrates that people are important to the company's success."
+    factor: "Leadership",
+    questionTemplate: "{organization}'s Senior Leadership demonstrates that people are important to the company's success."
   },
 
   // Mission & Purpose
   {
     id: "mission_1",
     factor: "Mission & Purpose",
-    question: "I understand On's Mission."
+    questionTemplate: "I understand {organization}'s Mission."
   },
   {
     id: "mission_2",
     factor: "Mission & Purpose",
-    question: "On's Mission aligns well with my own purpose and values."
+    questionTemplate: "{organization}'s Mission aligns well with my own purpose and values."
   },
   {
     id: "mission_3",
     factor: "Mission & Purpose",
-    question: "I know how my work contributes to the goals of On."
+    questionTemplate: "I know how my work contributes to the goals of {organization}."
   },
   {
     id: "mission_4",
     factor: "Mission & Purpose",
-    question: "On is in a position to succeed over the next 3 years."
+    questionTemplate: "{organization} is in a position to succeed over the next 3 years."
   },
   {
     id: "mission_5",
     factor: "Mission & Purpose",
-    question: "On's commitment to social responsibility is genuine (e.g. sustainability, social impact etc.)."
+    questionTemplate: "{organization}'s commitment to social responsibility is genuine (e.g. sustainability, social impact etc.)."
   },
   {
     id: "mission_6",
     factor: "Mission & Purpose",
-    question: "On's social impact program Right To Run really allows us to make a positive difference."
+    questionTemplate: "{organization}'s social impact initiatives really allow us to make a positive difference."
   },
 
   // Wellbeing & Switching Off
   {
     id: "wellbeing_1",
     factor: "Wellbeing & Switching Off",
-    question: "We are genuinely supported with flexibility in the way we work (hours, time off)."
+    questionTemplate: "We are genuinely supported with flexibility in the way we work (hours, time off)."
   },
   {
     id: "wellbeing_2",
     factor: "Wellbeing & Switching Off",
-    question: "I believe our team's wellbeing is a priority at On."
+    questionTemplate: "I believe our team's wellbeing is a priority at {organization}."
   },
   {
     id: "wellbeing_3",
     factor: "Wellbeing & Switching Off",
-    question: "The norms on my team are supportive of my personal or family responsibilities."
+    questionTemplate: "The norms on my team are supportive of my personal or family responsibilities."
   },
   {
     id: "wellbeing_4",
     factor: "Wellbeing & Switching Off",
-    question: "I am able to effectively switch off from work to make time for other areas in my life."
+    questionTemplate: "I am able to effectively switch off from work to make time for other areas in my life."
   },
   {
     id: "wellbeing_manager_1",
     factor: "Wellbeing & Switching Off",
     subFactor: "Direct Manager Effectiveness",
-    question: "My manager is checking in regularly enough with how I am doing (not just work related)."
+    questionTemplate: "My manager is checking in regularly enough with how I am doing (not just work related)."
   },
   {
     id: "wellbeing_manager_2",
     factor: "Wellbeing & Switching Off",
     subFactor: "Direct Manager Effectiveness",
-    question: "My manager is setting a good example for our wellbeing."
+    questionTemplate: "My manager is setting a good example for our wellbeing."
   },
 
   // Growth
   {
     id: "growth_1",
     factor: "Growth",
-    question: "On is a great company for me to make a contribution to my development."
+    questionTemplate: "{organization} is a great company for me to make a contribution to my development."
   },
   {
     id: "growth_2",
     factor: "Growth",
-    question: "I believe there are good personal growth opportunities for me at On."
+    questionTemplate: "I believe there are good personal growth opportunities for me at {organization}."
   },
   {
     id: "growth_3",
     factor: "Growth",
-    question: "My performance is evaluated fairly."
+    questionTemplate: "My performance is evaluated fairly."
   },
   {
     id: "growth_4",
     factor: "Growth",
-    question: "On is a great company for me to develop my leadership skills."
+    questionTemplate: "{organization} is a great company for me to develop my leadership skills."
   },
   {
     id: "growth_5",
     factor: "Growth",
-    question: "I know what I need to do to be successful in my role."
+    questionTemplate: "I know what I need to do to be successful in my role."
   },
   {
     id: "growth_manager_1",
     factor: "Growth",
     subFactor: "Direct Manager Effectiveness",
-    question: "My manager actively supports my personal growth & development."
+    questionTemplate: "My manager actively supports my personal growth & development."
   },
 
   // Diversity & Inclusion
   {
     id: "diversity_1",
     factor: "Diversity & Inclusion",
-    question: "Decisions that affect me are made in a fair and unbiased manner."
+    questionTemplate: "Decisions that affect me are made in a fair and unbiased manner."
   },
   {
     id: "diversity_2",
     factor: "Diversity & Inclusion",
-    question: "I can be my authentic self at work."
+    questionTemplate: "I can be my authentic self at work."
   },
   {
     id: "diversity_3",
     factor: "Diversity & Inclusion",
-    question: "I feel I am part of a team."
+    questionTemplate: "I feel I am part of a team."
   },
   {
     id: "diversity_4",
     factor: "Diversity & Inclusion",
-    question: "On values diversity."
+    questionTemplate: "{organization} values diversity."
   },
   {
     id: "diversity_5",
     factor: "Diversity & Inclusion",
-    question: "On builds teams that are diverse."
+    questionTemplate: "{organization} builds teams that are diverse."
   },
   {
     id: "diversity_6",
     factor: "Diversity & Inclusion",
-    question: "People from all backgrounds have equal opportunities to succeed at On."
+    questionTemplate: "People from all backgrounds have equal opportunities to succeed at {organization}."
   },
   {
     id: "diversity_7",
     factor: "Diversity & Inclusion",
-    question: "I am confident on how I can contribute in building a more inclusive culture in my team."
+    questionTemplate: "I am confident on how I can contribute in building a more inclusive culture in my team."
   },
   {
     id: "diversity_manager_1",
     factor: "Diversity & Inclusion",
     subFactor: "Direct Manager Effectiveness",
-    question: "My manager promotes an inclusive team environment."
+    questionTemplate: "My manager promotes an inclusive team environment."
   },
 
   // Entrepreneurship
   {
     id: "entrepreneurship_1",
     factor: "Entrepreneurship",
-    question: "I am able to use my personal initiative or judgment in carrying out my work."
+    questionTemplate: "I am able to use my personal initiative or judgment in carrying out my work."
   },
   {
     id: "entrepreneurship_2",
     factor: "Entrepreneurship",
-    question: "We are encouraged to be innovative even though some of our initiatives may not succeed."
+    questionTemplate: "We are encouraged to be innovative even though some of our initiatives may not succeed."
   },
   {
     id: "entrepreneurship_3",
     factor: "Entrepreneurship",
-    question: "We have the space to explore creative solutions and take thoughtful risks in our day-to-day work."
+    questionTemplate: "We have the space to explore creative solutions and take thoughtful risks in our day-to-day work."
   },
   {
     id: "entrepreneurship_4",
     factor: "Entrepreneurship",
-    question: "We have enough autonomy to perform our jobs effectively."
+    questionTemplate: "We have enough autonomy to perform our jobs effectively."
   },
 
   // Psychological Safety
@@ -246,120 +253,120 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     id: "psych_safety_manager_1",
     factor: "Psychological Safety",
     subFactor: "Direct Manager Effectiveness",
-    question: "My manager is a great role model for our team."
+    questionTemplate: "My manager is a great role model for our team."
   },
   {
     id: "psych_safety_1",
     factor: "Psychological Safety",
-    question: "At On there is open and honest two-way communication."
+    questionTemplate: "At {organization} there is open and honest two-way communication."
   },
   {
     id: "psych_safety_2",
     factor: "Psychological Safety",
-    question: "I can voice a contrary opinion without fear of negative consequences."
+    questionTemplate: "I can voice a contrary opinion without fear of negative consequences."
   },
   {
     id: "psych_safety_3",
     factor: "Psychological Safety",
-    question: "When I share my opinion, it is valued."
+    questionTemplate: "When I share my opinion, it is valued."
   },
   {
     id: "psych_safety_4",
     factor: "Psychological Safety",
-    question: "At On, failure is seen as an opportunity for learning and growth."
+    questionTemplate: "At {organization}, failure is seen as an opportunity for learning and growth."
   },
   {
     id: "psych_safety_manager_2",
     factor: "Psychological Safety",
     subFactor: "Direct Manager Effectiveness",
-    question: "People are comfortable speaking up when our manager is present."
+    questionTemplate: "People are comfortable speaking up when our manager is present."
   },
 
   // Team Communication & Collaboration
   {
     id: "team_comm_1",
     factor: "Team Communication & Collaboration",
-    question: "I have access to the information I need to do my job effectively."
+    questionTemplate: "I have access to the information I need to do my job effectively."
   },
   {
     id: "team_comm_2",
     factor: "Team Communication & Collaboration",
-    question: "Other functions at On collaborate well with our team to get the job done."
+    questionTemplate: "Other functions at {organization} collaborate well with our team to get the job done."
   },
   {
     id: "team_comm_3",
     factor: "Team Communication & Collaboration",
-    question: "Most of the systems and processes here support us getting our work done effectively."
+    questionTemplate: "Most of the systems and processes here support us getting our work done effectively."
   },
   {
     id: "team_comm_4",
     factor: "Team Communication & Collaboration",
-    question: "Generally, teams at On work towards common goals."
+    questionTemplate: "Generally, teams at {organization} work towards common goals."
   },
   {
     id: "team_comm_5",
     factor: "Team Communication & Collaboration",
-    question: "The way decisions are taken at On supports us getting our work done effectively."
+    questionTemplate: "The way decisions are taken at {organization} supports us getting our work done effectively."
   },
   {
     id: "team_comm_6",
     factor: "Team Communication & Collaboration",
-    question: "My work is efficiently aligned with other team members."
+    questionTemplate: "My work is efficiently aligned with other team members."
   },
   {
     id: "team_comm_7",
     factor: "Team Communication & Collaboration",
-    question: "Where required, we have clearly defined ownership for company priorities, goals and initiatives at On."
+    questionTemplate: "Where required, we have clearly defined ownership for company priorities, goals and initiatives at {organization}."
   },
   {
     id: "team_comm_8",
     factor: "Team Communication & Collaboration",
-    question: "I am appropriately involved in decisions that affect my work."
+    questionTemplate: "I am appropriately involved in decisions that affect my work."
   },
 
   // Reward & Recognition
   {
     id: "reward_1",
     factor: "Reward & Recognition",
-    question: "I am fairly compensated for the work I do."
+    questionTemplate: "I am fairly compensated for the work I do."
   },
   {
     id: "reward_2",
     factor: "Reward & Recognition",
-    question: "I receive appropriate recognition for good work at On."
+    questionTemplate: "I receive appropriate recognition for good work at {organization}."
   },
   {
     id: "reward_3",
     factor: "Reward & Recognition",
-    question: "I feel empowered to appropriately reward and recognize my team."
+    questionTemplate: "I feel empowered to appropriately reward and recognize my team."
   },
   {
     id: "reward_4",
     factor: "Reward & Recognition",
-    question: "Generally, the right people are recognized at On."
+    questionTemplate: "Generally, the right people are recognized at {organization}."
   },
 
   // Psychological Safety (Feedback)
   {
     id: "psych_feedback_1",
     factor: "Psychological Safety (Feedback)",
-    question: "On takes action on team's feedback."
+    questionTemplate: "{organization} takes action on team's feedback."
   },
   {
     id: "psych_feedback_2",
     factor: "Psychological Safety (Feedback)",
-    question: "Our culture encourages giving candid, honest feedback even when it may be difficult."
+    questionTemplate: "Our culture encourages giving candid, honest feedback even when it may be difficult."
   },
   {
     id: "psych_feedback_3",
     factor: "Psychological Safety (Feedback)",
-    question: "We (team members) regularly give each other candid feedback."
+    questionTemplate: "We (team members) regularly give each other candid feedback."
   },
   {
     id: "psych_feedback_manager_1",
     factor: "Psychological Safety (Feedback)",
     subFactor: "Direct Manager Effectiveness",
-    question: "My manager gives me useful feedback on how I am performing."
+    questionTemplate: "My manager gives me useful feedback on how I am performing."
   },
 
   // Individual Focus & Productivity
@@ -367,80 +374,80 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     id: "productivity_manager_1",
     factor: "Individual Focus & Productivity",
     subFactor: "Direct Manager Effectiveness",
-    question: "My manager keeps me informed about my team's future direction and goals."
+    questionTemplate: "My manager keeps me informed about my team's future direction and goals."
   },
   {
     id: "productivity_manager_2",
     factor: "Individual Focus & Productivity",
     subFactor: "Direct Manager Effectiveness",
-    question: "My manager provides me with the information I need to do my job effectively."
+    questionTemplate: "My manager provides me with the information I need to do my job effectively."
   },
   {
     id: "productivity_1",
     factor: "Individual Focus & Productivity",
-    question: "When it is clear that someone is not delivering in their role, we do something about it."
+    questionTemplate: "When it is clear that someone is not delivering in their role, we do something about it."
   },
   {
     id: "productivity_2",
     factor: "Individual Focus & Productivity",
-    question: "I feel equipped to effectively prioritize my workload."
+    questionTemplate: "I feel equipped to effectively prioritize my workload."
   },
   {
     id: "productivity_3",
     factor: "Individual Focus & Productivity",
-    question: "Generally, I believe my workload is reasonable for my role."
+    questionTemplate: "Generally, I believe my workload is reasonable for my role."
   },
 
   // Compliance
   {
     id: "compliance_1",
     factor: "Compliance",
-    question: "I am aware of and understand On's Code of Conduct and other compliance guidelines."
+    questionTemplate: "I am aware of and understand {organization}'s Code of Conduct and other compliance guidelines."
   },
   {
     id: "compliance_2",
     factor: "Compliance",
-    question: "I believe On's Code of Conduct and other compliance guidelines help team members act in accordance with On's values."
+    questionTemplate: "I believe {organization}'s Code of Conduct and other compliance guidelines help team members act in accordance with {organization}'s values."
   },
 
   // Retention
   {
     id: "retention_1",
     factor: "Retention",
-    question: "I rarely think about looking for a job at another company."
+    questionTemplate: "I rarely think about looking for a job at another company."
   },
   {
     id: "retention_2",
     factor: "Retention",
-    question: "I plan to be working at On a year from now."
+    questionTemplate: "I plan to be working at {organization} a year from now."
   },
   {
     id: "retention_3",
     factor: "Retention",
-    question: "If I were offered a similar job at another company, I would stay at On."
+    questionTemplate: "If I were offered a similar job at another company, I would stay at {organization}."
   },
 
   // Excellence
   {
     id: "excellence_1",
     factor: "Excellence",
-    question: "Day-to-day decisions here demonstrate that quality and improvement are top priorities."
+    questionTemplate: "Day-to-day decisions here demonstrate that quality and improvement are top priorities."
   },
   {
     id: "excellence_2",
     factor: "Excellence",
-    question: "On strives for excellence in all aspects of its operations."
+    questionTemplate: "{organization} strives for excellence in all aspects of its operations."
   },
   {
     id: "excellence_3",
     factor: "Excellence",
-    question: "At On, we are striking a good balance between continuous improvement and launching new projects."
+    questionTemplate: "At {organization}, we are striking a good balance between continuous improvement and launching new projects."
   }
 ];
 
 export const SURVEY_FACTORS = [
   "Happiness",
-  "On's Senior Leadership",
+  "Leadership",
   "Mission & Purpose",
   "Wellbeing & Switching Off",
   "Growth",
@@ -464,9 +471,49 @@ export const RATING_LABELS = {
   5: "Strongly Agree"
 };
 
-export function getQuestionsByFactor(factor: string): SurveyQuestion[] {
-  return SURVEY_QUESTIONS.filter(q => q.factor === factor);
+// Helper function to generate dynamic questions based on organization
+export function generateSurveyQuestions(organizationName: string): SurveyQuestion[] {
+  return SURVEY_QUESTION_TEMPLATES.map(template => ({
+    id: template.id,
+    factor: template.factor,
+    subFactor: template.subFactor,
+    question: template.questionTemplate.replace(/{organization}/g, organizationName)
+  }));
 }
+
+// Legacy function - generates questions using templates (backward compatibility)
+export function getQuestionsByFactor(factor: string, organizationName?: string): SurveyQuestion[] {
+  const questions = organizationName 
+    ? generateSurveyQuestions(organizationName)
+    : SURVEY_QUESTION_TEMPLATES.map(template => ({
+        id: template.id,
+        factor: template.factor,
+        subFactor: template.subFactor,
+        question: template.questionTemplate.replace(/{organization}/g, 'the organization')
+      }));
+  
+  return questions.filter(q => q.factor === factor);
+}
+
+// New function to get all questions for an organization
+export function getAllSurveyQuestions(organizationName?: string): SurveyQuestion[] {
+  return organizationName 
+    ? generateSurveyQuestions(organizationName)
+    : SURVEY_QUESTION_TEMPLATES.map(template => ({
+        id: template.id,
+        factor: template.factor,
+        subFactor: template.subFactor,
+        question: template.questionTemplate.replace(/{organization}/g, 'the organization')
+      }));
+}
+
+// Backward compatibility - keeping the old SURVEY_QUESTIONS export
+export const SURVEY_QUESTIONS: SurveyQuestion[] = SURVEY_QUESTION_TEMPLATES.map(template => ({
+  id: template.id,
+  factor: template.factor,
+  subFactor: template.subFactor,
+  question: template.questionTemplate.replace(/{organization}/g, 'the organization')
+}));
 
 // Demographic Questions Configuration
 export const DEMOGRAPHIC_QUESTIONS = {

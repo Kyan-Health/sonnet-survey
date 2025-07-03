@@ -157,7 +157,7 @@ export default function SurveyPage() {
 
   // Survey questions flow
   const currentFactorName = SURVEY_FACTORS[currentFactor];
-  const currentQuestions = getQuestionsByFactor(currentFactorName);
+  const currentQuestions = getQuestionsByFactor(currentFactorName, currentOrganization?.displayName);
   const totalFactors = SURVEY_FACTORS.length;
   const surveyProgressPercentage = ((currentFactor + 1) / totalFactors) * 75; // 75% for survey portion
   const totalProgressPercentage = 25 + surveyProgressPercentage; // 25% for demographics + survey progress
