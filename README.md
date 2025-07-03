@@ -1,36 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sonnet Survey - Employee Experience Survey Platform
 
-## Getting Started
+A comprehensive employee experience survey application built with Next.js, Firebase, and TypeScript, designed specifically for Kyan Health team members.
 
-First, run the development server:
+## 🌟 Features
 
+### 🔐 Authentication & Security
+- **Firebase Google Auth** restricted to @kyanhealth.com email addresses
+- **Custom claims-based admin system** with server-side verification
+- **Secure Firestore rules** protecting survey data
+- **Admin user management** interface
+
+### 📊 Survey System
+- **73 employee engagement questions** organized by 15 factors:
+  - Happiness, Leadership, Mission & Purpose
+  - Wellbeing, Growth, Diversity & Inclusion
+  - Entrepreneurship, Psychological Safety
+  - Team Communication, Rewards, Feedback
+  - Productivity, Compliance, Retention, Excellence
+
+### 👥 Demographics Collection
+- **Department, Country, Role Level**
+- **Years at Company, Work Location**
+- **Privacy-focused** with aggregate analysis only
+
+### 📈 Admin Dashboard
+- **Real-time analytics** with factor scoring
+- **Demographics breakdown** with visual charts
+- **Response distribution** and completion rates
+- **User management** for granting admin access
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- Firebase project with Authentication and Firestore enabled
+- @kyanhealth.com Google Workspace account
+
+### Installation
+
+1. **Clone the repository**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd sonnet-survey
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install dependencies**
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Set up environment variables**
+Create `.env.local` with your Firebase credentials:
+```env
+FIREBASE_PROJECT_ID=survey-sonnet
+FIREBASE_CLIENT_EMAIL=your-service-account@survey-sonnet.iam.gserviceaccount.com
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Deploy Firestore security rules**
+```bash
+firebase login
+firebase init firestore
+firebase deploy --only firestore:rules
+```
 
-## Learn More
+5. **Run the development server**
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                    # Next.js app router
+│   ├── admin/             # Admin dashboard pages
+│   ├── api/               # API routes for admin functions
+│   └── survey/            # Survey form page
+├── components/            # Reusable React components
+├── contexts/              # React context providers
+├── data/                  # Survey questions and types
+└── lib/                   # Utility functions and services
+```
 
-## Deploy on Vercel
+## 🔧 Configuration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Firebase Setup
+1. Create a Firebase project
+2. Enable Authentication with Google provider
+3. Create Firestore database
+4. Generate service account key
+5. Configure authorized domains
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Admin Access
+1. Set custom claims manually for first admin:
+```javascript
+// Using Firebase Admin SDK
+await admin.auth().setCustomUserClaims(uid, { admin: true });
+```
+
+2. Use admin dashboard to grant access to other users
+
+### Survey Questions
+Modify questions in `src/data/surveyData.ts`:
+- `SURVEY_QUESTIONS` - Main engagement questions
+- `DEMOGRAPHIC_QUESTIONS` - Demographics form configuration
+
+## 🚢 Deployment
+
+### Firebase Hosting
+```bash
+npm run build
+firebase deploy --only hosting
+```
+
+### Environment Variables
+Set production environment variables in Firebase:
+```bash
+firebase functions:config:set app.firebase_client_email="..." app.firebase_private_key="..."
+```
+
+## 📊 Analytics
+
+The admin dashboard provides:
+- **Overall engagement scores** across all factors
+- **Department-wise breakdown** of satisfaction
+- **Geographic analysis** by country
+- **Tenure-based insights** (years at company)
+- **Role-level comparisons** (IC vs Manager vs Director)
+- **Work location analysis** (Remote vs Office vs Hybrid)
+
+## 🔒 Security Features
+
+- **Domain restriction** to @kyanhealth.com only
+- **Server-side token verification** for all admin operations
+- **Firestore security rules** protecting data access
+- **Custom claims** for role-based access control
+- **Immutable survey responses** (no edits after submission)
+
+## 🧪 Testing
+
+```bash
+# Run tests
+npm test
+
+# Build and check for errors
+npm run build
+
+# Lint code
+npm run lint
+```
+
+## 📝 License
+
+This project is proprietary to Kyan Health.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📞 Support
+
+For questions or issues, contact the development team or create an issue in this repository.
+
+---
+
+Built with ❤️ for the Kyan Health team
