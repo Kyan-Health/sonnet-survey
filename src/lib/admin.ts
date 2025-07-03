@@ -45,12 +45,13 @@ export async function setUserAdmin(user: User, targetUid: string, isAdmin: boole
     // Get fresh ID token
     const idToken = await user.getIdToken();
     
-    const response = await fetch('/api/admin/set-claims', {
+    const response = await fetch('https://us-central1-survey-sonnet.cloudfunctions.net/setAdminClaims', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${idToken}`,
       },
-      body: JSON.stringify({ idToken, targetUid, isAdmin }),
+      body: JSON.stringify({ targetUid, isAdmin }),
     });
 
     const result = await response.json();

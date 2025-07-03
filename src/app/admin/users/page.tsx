@@ -13,6 +13,17 @@ interface UserRecord {
   lastSignIn?: Date;
 }
 
+interface ApiUserRecord {
+  uid: string;
+  email: string;
+  displayName?: string;
+  isAdmin: boolean;
+  lastSignIn?: string;
+  createdAt: string;
+  disabled: boolean;
+  emailVerified: boolean;
+}
+
 export default function AdminUsersPage() {
   const { user, loading } = useAuth();
   const [isUserAdmin, setIsUserAdmin] = useState(false);
@@ -45,17 +56,27 @@ export default function AdminUsersPage() {
     if (user && isUserAdmin) {
       setIsLoading(true);
       try {
-        // For static hosting, we'll show a simplified view with current user
-        // In production, this would need Firebase Functions for full user management
-        const currentUser: UserRecord = {
-          uid: user.uid,
-          email: user.email || '',
-          displayName: user.displayName || user.email?.split('@')[0] || 'Current User',
-          isAdmin: true,
-          lastSignIn: new Date()
-        };
+        const idToken = await user.getIdToken();
+        const response = await fetch('https://us-central1-survey-sonnet.cloudfunctions.net/listUsers', {
+          headers: {
+            'Authorization': `Bearer ${idToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch users: ${response.statusText}`);
+        }
+
+        const data: { users: ApiUserRecord[] } = await response.json();
+        const formattedUsers: UserRecord[] = data.users.map((u: ApiUserRecord) => ({
+          uid: u.uid,
+          email: u.email,
+          displayName: u.displayName || u.email?.split('@')[0] || 'Unknown',
+          isAdmin: u.isAdmin,
+          lastSignIn: u.lastSignIn ? new Date(u.lastSignIn) : undefined
+        }));
         
-        setUsers([currentUser]);
+        setUsers(formattedUsers);
         setError(null);
       } catch (error) {
         console.error('Error loading users:', error);
@@ -270,13 +291,12 @@ export default function AdminUsersPage() {
         </div>
 
         {/* Note */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
           <div className="flex">
-            <div className="text-yellow-600 text-sm">
-              <strong>Note:</strong> Due to static hosting limitations, this interface currently shows 
-              only the current user. For full user management capabilities, you would need to deploy 
-              Firebase Functions to list all users and manage admin status through Firebase Admin SDK.
-              Admin status is managed through Firebase custom claims.
+            <div className="text-blue-600 text-sm">
+              <strong>Note:</strong> This interface shows all @kyanhealth.com users registered 
+              in Firebase Auth via Firebase Functions. Admin status is managed through Firebase 
+              custom claims. Only existing admins can grant or revoke admin access to other users.
             </div>
           </div>
         </div>
