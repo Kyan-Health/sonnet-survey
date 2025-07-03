@@ -18,13 +18,16 @@ export interface DemographicResponse {
   workLocation: string;
 }
 
+// Dynamic demographic response type for organization-specific questions
+export type DynamicDemographicResponse = Record<string, string>;
+
 export interface CompletedSurvey {
   userId: string;
   userEmail: string;
   organizationId: string;
   organizationName: string;
   responses: SurveyResponse[];
-  demographics: DemographicResponse;
+  demographics: DynamicDemographicResponse; // Updated to use dynamic type
   completedAt: Date;
   sessionId: string;
 }

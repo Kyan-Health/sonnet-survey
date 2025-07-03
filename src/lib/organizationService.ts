@@ -135,6 +135,32 @@ export async function getOrganizationByDomain(domain: string): Promise<Organizat
   }
 }
 
+export async function getOrganizationById(organizationId: string): Promise<Organization | null> {
+  try {
+    const orgRef = doc(db, ORGANIZATIONS_COLLECTION, organizationId);
+    const orgDoc = await getDoc(orgRef);
+    
+    if (!orgDoc.exists()) {
+      // Check defaults for backward compatibility
+      const defaultOrg = DEFAULT_ORGANIZATIONS.find(org => org.id === organizationId);
+      return defaultOrg || null;
+    }
+
+    const data = orgDoc.data();
+    return {
+      id: orgDoc.id,
+      ...data,
+      createdAt: data.createdAt?.toDate() || new Date(),
+      updatedAt: data.updatedAt?.toDate() || new Date(),
+    } as Organization;
+  } catch (error) {
+    console.error('Error fetching organization by ID:', error);
+    // Check defaults for backward compatibility
+    const defaultOrg = DEFAULT_ORGANIZATIONS.find(org => org.id === organizationId);
+    return defaultOrg || null;
+  }
+}
+
 export async function getOrganizationFromEmail(email: string): Promise<Organization | null> {
   const domain = email.split('@')[1];
   if (!domain) return null;

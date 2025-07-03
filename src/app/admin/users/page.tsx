@@ -186,7 +186,7 @@ export default function AdminUsersPage() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">User Administration</h1>
               <p className="text-gray-600">
-                Manage admin access for @kyanhealth.com users
+                Manage admin access for organization users
               </p>
             </div>
             <div className="space-x-2">
@@ -294,7 +294,7 @@ export default function AdminUsersPage() {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
           <div className="flex">
             <div className="text-blue-600 text-sm">
-              <strong>Note:</strong> This interface shows all @kyanhealth.com users registered 
+              <strong>Note:</strong> This interface shows all organization users registered 
               in Firebase Auth via Firebase Functions. Admin status is managed through Firebase 
               custom claims. Only existing admins can grant or revoke admin access to other users.
             </div>

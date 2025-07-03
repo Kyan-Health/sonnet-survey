@@ -9,10 +9,11 @@ import {
   RATING_LABELS, 
   getQuestionsByFactor,
   SurveyResponse,
-  DemographicResponse 
+  DynamicDemographicResponse 
 } from '@/data/surveyData';
 import { submitSurvey, hasUserCompletedSurvey } from '@/lib/surveyService';
 import DemographicForm from '@/components/DemographicForm';
+import { DEFAULT_DEMOGRAPHIC_QUESTIONS } from '@/types/organization';
 
 export default function SurveyPage() {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ export default function SurveyPage() {
   const [currentStep, setCurrentStep] = useState<'demographics' | 'survey'>('demographics');
   const [currentFactor, setCurrentFactor] = useState(0);
   const [responses, setResponses] = useState<{ [questionId: string]: number }>({});
-  const [demographics, setDemographics] = useState<DemographicResponse | null>(null);
+  const [demographics, setDemographics] = useState<DynamicDemographicResponse | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasCompleted, setHasCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +43,7 @@ export default function SurveyPage() {
     checkCompletion();
   }, [user]);
 
-  const handleDemographicsComplete = (demographicResponses: DemographicResponse) => {
+  const handleDemographicsComplete = (demographicResponses: DynamicDemographicResponse) => {
     setDemographics(demographicResponses);
     setCurrentStep('survey');
   };
@@ -145,7 +146,10 @@ export default function SurveyPage() {
             </div>
           </div>
 
-          <DemographicForm onComplete={handleDemographicsComplete} />
+          <DemographicForm 
+            questions={currentOrganization?.demographicQuestions || DEFAULT_DEMOGRAPHIC_QUESTIONS}
+            onComplete={handleDemographicsComplete} 
+          />
         </div>
       </div>
     );

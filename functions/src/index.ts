@@ -5,6 +5,31 @@ import * as admin from "firebase-admin";
 admin.initializeApp();
 
 const auth = admin.auth();
+const db = admin.firestore();
+
+/**
+ * Check if a domain is valid (exists in organizations collection)
+ */
+async function isValidOrganizationDomain(domain: string): Promise<boolean> {
+  try {
+    const organizationsRef = db.collection('organizations');
+    const query = organizationsRef.where('domain', '==', domain).where('isActive', '==', true);
+    const snapshot = await query.get();
+    return !snapshot.empty;
+  } catch (error) {
+    console.error('Error checking organization domain:', error);
+    return false;
+  }
+}
+
+/**
+ * Check if an email belongs to a valid organization
+ */
+async function isValidOrganizationEmail(email: string): Promise<boolean> {
+  const domain = email.split('@')[1];
+  if (!domain) return false;
+  return await isValidOrganizationDomain(domain);
+}
 
 
 /**
@@ -21,7 +46,7 @@ async function verifyAdminAccess(idToken: string): Promise<admin.auth.DecodedIdT
 }
 
 /**
- * List all @kyanhealth.com users
+ * List all users from valid organization domains
  */
 export const listUsers = functions.region('europe-west1').https.onRequest(async (req, res) => {
   // Set CORS headers
@@ -54,9 +79,16 @@ export const listUsers = functions.region('europe-west1').https.onRequest(async 
     // List all users
     const listUsersResult = await auth.listUsers(1000);
     
-    // Filter and format @kyanhealth.com users
-    const kyanUsers = listUsersResult.users
-      .filter(user => user.email?.endsWith('@kyanhealth.com'))
+    // Filter users to only include those from valid organization domains
+    const validUsers = [];
+    for (const user of listUsersResult.users) {
+      if (user.email && await isValidOrganizationEmail(user.email)) {
+        validUsers.push(user);
+      }
+    }
+    
+    // Format valid organization users
+    const organizationUsers = validUsers
       .map(user => ({
         uid: user.uid,
         email: user.email,
@@ -68,7 +100,7 @@ export const listUsers = functions.region('europe-west1').https.onRequest(async 
         emailVerified: user.emailVerified
       }));
 
-    res.json({ users: kyanUsers });
+    res.json({ users: organizationUsers });
   } catch (error) {
     console.error('Error listing users:', error);
     if (error instanceof functions.https.HttpsError) {
@@ -124,10 +156,10 @@ export const setAdminClaims = functions.region('europe-west1').https.onRequest(a
       return;
     }
 
-    // Verify target user exists and is @kyanhealth.com
+    // Verify target user exists and belongs to a valid organization
     const targetUser = await auth.getUser(targetUid);
-    if (!targetUser.email?.endsWith('@kyanhealth.com')) {
-      res.status(400).json({ error: 'Can only manage @kyanhealth.com users' });
+    if (!targetUser.email || !(await isValidOrganizationEmail(targetUser.email))) {
+      res.status(400).json({ error: 'Can only manage users from valid organization domains' });
       return;
     }
 

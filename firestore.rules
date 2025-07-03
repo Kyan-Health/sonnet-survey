@@ -2,18 +2,9 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check if user is authenticated with supported domain
-    function isValidDomainUser() {
-      return request.auth != null && 
-             (request.auth.token.email.matches('.*@kyanhealth.com$') ||
-              request.auth.token.email.matches('.*@example.com$'));
-    }
-    
-    // Helper function to get organization ID from email domain
-    function getOrgFromEmail() {
-      let email = request.auth.token.email;
-      return email.matches('.*@kyanhealth.com$') ? 'kyan-health' :
-             email.matches('.*@example.com$') ? 'example-org' : null;
+    // Helper function to check if user is authenticated
+    function isAuthenticatedUser() {
+      return request.auth != null && request.auth.token.email != null;
     }
     
     // Helper function to check if user is admin
@@ -29,10 +20,9 @@ service cloud.firestore {
     
     // Survey responses collection
     match /surveys/{surveyId} {
-      // Users can create their own survey responses with correct organization
-      allow create: if isValidDomainUser() && 
-                       isOwner(resource.data.userId) &&
-                       resource.data.organizationId == getOrgFromEmail();
+      // Users can create their own survey responses (organization validation done in app)
+      allow create: if isAuthenticatedUser() && 
+                       request.auth.uid == request.resource.data.userId;
       
       // Only admins can read survey responses
       allow read: if isAdmin();
@@ -44,7 +34,7 @@ service cloud.firestore {
     // User survey status collection (tracks completion)
     match /userSurveyStatus/{userId} {
       // Users can read and write their own status
-      allow read, write: if isValidDomainUser() && isOwner(userId);
+      allow read, write: if isAuthenticatedUser() && isOwner(userId);
       
       // Admins can read all status documents
       allow read: if isAdmin();
@@ -53,9 +43,10 @@ service cloud.firestore {
       allow delete: if false;
     }
     
-    // Organizations collection - admin only
+    // Organizations collection - read for all (needed for login validation), write for admins only
     match /organizations/{organizationId} {
-      allow read, write: if isAdmin();
+      allow read: if true;
+      allow write: if isAdmin();
     }
     
     // Admin-only collections for analytics (if needed in future)

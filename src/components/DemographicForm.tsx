@@ -1,41 +1,44 @@
 'use client';
 
 import { useState } from 'react';
-import { DEMOGRAPHIC_QUESTIONS, DemographicResponse, DemographicQuestionKey } from '@/data/surveyData';
+import { DemographicQuestion } from '@/types/organization';
+
+// Dynamic demographic response type
+export type DynamicDemographicResponse = Record<string, string>;
 
 interface DemographicFormProps {
-  onComplete: (demographics: DemographicResponse) => void;
+  questions: DemographicQuestion[];
+  onComplete: (demographics: DynamicDemographicResponse) => void;
   onBack?: () => void;
 }
 
-export default function DemographicForm({ onComplete, onBack }: DemographicFormProps) {
-  const [responses, setResponses] = useState<Partial<DemographicResponse>>({});
-  const [errors, setErrors] = useState<Partial<Record<DemographicQuestionKey, string>>>({});
+export default function DemographicForm({ questions, onComplete, onBack }: DemographicFormProps) {
+  const [responses, setResponses] = useState<DynamicDemographicResponse>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleChange = (key: DemographicQuestionKey, value: string) => {
+  const handleChange = (questionId: string, value: string) => {
     setResponses(prev => ({
       ...prev,
-      [key]: value
+      [questionId]: value
     }));
     
     // Clear error when user selects a value
-    if (errors[key]) {
+    if (errors[questionId]) {
       setErrors(prev => ({
         ...prev,
-        [key]: undefined
+        [questionId]: ''
       }));
     }
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<Record<DemographicQuestionKey, string>> = {};
+    const newErrors: Record<string, string> = {};
     let isValid = true;
 
     // Check all required fields
-    Object.entries(DEMOGRAPHIC_QUESTIONS).forEach(([key, config]) => {
-      const demographicKey = key as DemographicQuestionKey;
-      if (config.required && !responses[demographicKey]) {
-        newErrors[demographicKey] = 'This field is required';
+    questions.forEach((question) => {
+      if (question.required && !responses[question.id]) {
+        newErrors[question.id] = 'This field is required';
         isValid = false;
       }
     });
@@ -48,13 +51,13 @@ export default function DemographicForm({ onComplete, onBack }: DemographicFormP
     e.preventDefault();
     
     if (validateForm()) {
-      onComplete(responses as DemographicResponse);
+      onComplete(responses);
     }
   };
 
-  const canProceed = Object.keys(DEMOGRAPHIC_QUESTIONS).every(key => 
-    responses[key as DemographicQuestionKey]
-  );
+  const requiredQuestions = questions.filter(q => q.required);
+  const answeredRequired = requiredQuestions.filter(q => responses[q.id]).length;
+  const canProceed = answeredRequired === requiredQuestions.length;
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
@@ -68,42 +71,71 @@ export default function DemographicForm({ onComplete, onBack }: DemographicFormP
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {Object.entries(DEMOGRAPHIC_QUESTIONS).map(([key, config]) => {
-          const demographicKey = key as DemographicQuestionKey;
-          const hasError = !!errors[demographicKey];
-          
-          return (
-            <div key={key}>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {config.label}
-                {config.required && <span className="text-red-500 ml-1">*</span>}
-              </label>
-              
-              {config.type === 'select' && (
-                <select
-                  value={responses[demographicKey] || ''}
-                  onChange={(e) => handleChange(demographicKey, e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    hasError 
-                      ? 'border-red-500 focus:ring-red-500' 
-                      : 'border-gray-300'
-                  }`}
-                >
-                  <option value="">Please select...</option>
-                  {config.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              )}
-              
-              {hasError && (
-                <p className="mt-1 text-sm text-red-600">{errors[demographicKey]}</p>
-              )}
-            </div>
-          );
-        })}
+        {questions
+          .sort((a, b) => a.order - b.order)
+          .map((question) => {
+            const hasError = !!errors[question.id];
+            
+            return (
+              <div key={question.id}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {question.label}
+                  {question.required && <span className="text-red-500 ml-1">*</span>}
+                </label>
+                
+                {question.type === 'select' && (
+                  <select
+                    value={responses[question.id] || ''}
+                    onChange={(e) => handleChange(question.id, e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      hasError 
+                        ? 'border-red-500 focus:ring-red-500' 
+                        : 'border-gray-300'
+                    }`}
+                  >
+                    <option value="">Please select...</option>
+                    {question.options?.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                
+                {question.type === 'text' && (
+                  <input
+                    type="text"
+                    value={responses[question.id] || ''}
+                    onChange={(e) => handleChange(question.id, e.target.value)}
+                    placeholder={question.placeholder || ''}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      hasError 
+                        ? 'border-red-500 focus:ring-red-500' 
+                        : 'border-gray-300'
+                    }`}
+                  />
+                )}
+                
+                {question.type === 'number' && (
+                  <input
+                    type="number"
+                    value={responses[question.id] || ''}
+                    onChange={(e) => handleChange(question.id, e.target.value)}
+                    placeholder={question.placeholder || ''}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      hasError 
+                        ? 'border-red-500 focus:ring-red-500' 
+                        : 'border-gray-300'
+                    }`}
+                  />
+                )}
+                
+                {hasError && (
+                  <p className="mt-1 text-sm text-red-600">{errors[question.id]}</p>
+                )}
+              </div>
+            );
+          })}
 
         <div className="flex justify-between items-center pt-4">
           {onBack ? (
@@ -119,7 +151,7 @@ export default function DemographicForm({ onComplete, onBack }: DemographicFormP
           )}
 
           <div className="text-sm text-gray-600">
-            {Object.values(responses).filter(Boolean).length} of {Object.keys(DEMOGRAPHIC_QUESTIONS).length} questions answered
+            {Object.values(responses).filter(Boolean).length} of {questions.length} questions answered
           </div>
 
           <button

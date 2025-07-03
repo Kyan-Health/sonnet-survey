@@ -12,6 +12,7 @@ import {
   toggleOrganizationStatus,
   deleteOrganization
 } from '@/lib/organizationService';
+import DemographicManagementModal from '@/components/DemographicManagementModal';
 
 export default function OrganizationsManagementPage() {
   const { user, loading } = useAuth();
@@ -23,6 +24,8 @@ export default function OrganizationsManagementPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDemographicsModal, setShowDemographicsModal] = useState(false);
+  const [selectedOrgForDemographics, setSelectedOrgForDemographics] = useState<Organization | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -180,6 +183,23 @@ export default function OrganizationsManagementPage() {
       customBranding: org.settings.customBranding || false,
     });
     setShowCreateForm(true);
+  };
+
+  const openDemographicsModal = (org: Organization) => {
+    setSelectedOrgForDemographics(org);
+    setShowDemographicsModal(true);
+  };
+
+  const closeDemographicsModal = () => {
+    setShowDemographicsModal(false);
+    setSelectedOrgForDemographics(null);
+  };
+
+  const handleDemographicsSave = (updatedOrg: Organization) => {
+    // Update the organization in the local state
+    setOrganizations(prevOrgs => 
+      prevOrgs.map(org => org.id === updatedOrg.id ? updatedOrg : org)
+    );
   };
 
   if (loading || isCheckingAdmin) {
@@ -396,16 +416,22 @@ export default function OrganizationsManagementPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {org.createdAt.toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm space-x-1">
                         <button
                           onClick={() => startEdit(org)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-xs"
+                          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded text-xs"
                         >
                           Edit
                         </button>
                         <button
+                          onClick={() => openDemographicsModal(org)}
+                          className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-2 rounded text-xs"
+                        >
+                          Demographics
+                        </button>
+                        <button
                           onClick={() => handleToggleStatus(org.id)}
-                          className={`font-bold py-1 px-3 rounded text-xs ${
+                          className={`font-bold py-1 px-2 rounded text-xs ${
                             org.isActive
                               ? 'bg-red-500 hover:bg-red-600 text-white'
                               : 'bg-green-500 hover:bg-green-600 text-white'
@@ -416,7 +442,7 @@ export default function OrganizationsManagementPage() {
                         {org.createdBy !== 'system' && (
                           <button
                             onClick={() => handleDelete(org.id, org.name)}
-                            className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs"
+                            className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-xs"
                           >
                             Delete
                           </button>
@@ -436,6 +462,16 @@ export default function OrganizationsManagementPage() {
           )}
         </div>
       </div>
+
+      {/* Demographics Management Modal */}
+      {selectedOrgForDemographics && (
+        <DemographicManagementModal
+          organization={selectedOrgForDemographics}
+          isOpen={showDemographicsModal}
+          onClose={closeDemographicsModal}
+          onSave={handleDemographicsSave}
+        />
+      )}
     </div>
   );
 }

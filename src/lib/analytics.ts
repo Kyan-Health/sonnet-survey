@@ -1,5 +1,5 @@
 import { getSurveyResponsesByOrganization } from './surveyService';
-import { SURVEY_QUESTIONS, SURVEY_FACTORS, getQuestionsByFactor, CompletedSurvey, DEMOGRAPHIC_QUESTIONS } from '@/data/surveyData';
+import { SURVEY_QUESTIONS, SURVEY_FACTORS, getQuestionsByFactor, CompletedSurvey } from '@/data/surveyData';
 
 export interface FactorAnalysis {
   factor: string;
@@ -30,13 +30,7 @@ export interface SurveyAnalytics {
   factorAnalysis: FactorAnalysis[];
   completionRate: number;
   responseDistribution: { [rating: number]: number };
-  demographics: {
-    department: DemographicBreakdown;
-    country: DemographicBreakdown;
-    yearsAtCompany: DemographicBreakdown;
-    role: DemographicBreakdown;
-    workLocation: DemographicBreakdown;
-  };
+  demographics: Record<string, DemographicBreakdown>; // Dynamic demographics
   lastUpdated: Date;
 }
 
@@ -95,18 +89,19 @@ function analyzeFactor(factor: string, allResponses: CompletedSurvey[]): FactorA
 }
 
 function analyzeDemographics(allResponses: CompletedSurvey[]): SurveyAnalytics['demographics'] {
-  const demographics: SurveyAnalytics['demographics'] = {
-    department: {},
-    country: {},
-    yearsAtCompany: {},
-    role: {},
-    workLocation: {}
-  };
+  const demographics: Record<string, DemographicBreakdown> = {};
 
-  // Initialize demographics breakdown
-  Object.keys(DEMOGRAPHIC_QUESTIONS).forEach(key => {
-    const demographicKey = key as keyof typeof DEMOGRAPHIC_QUESTIONS;
-    demographics[demographicKey] = {};
+  // Get all unique demographic keys from responses
+  const demographicKeys = new Set<string>();
+  allResponses.forEach(survey => {
+    if (survey.demographics) {
+      Object.keys(survey.demographics).forEach(key => demographicKeys.add(key));
+    }
+  });
+
+  // Initialize demographics breakdown for all found keys
+  demographicKeys.forEach(key => {
+    demographics[key] = {};
   });
 
   // Process each survey response
@@ -121,22 +116,21 @@ function analyzeDemographics(allResponses: CompletedSurvey[]): SurveyAnalytics['
 
     // Update demographic breakdowns
     Object.entries(survey.demographics).forEach(([key, value]) => {
-      const demographicKey = key as keyof typeof demographics;
-      if (demographics[demographicKey] && value && value.trim() !== '') {
-        if (!demographics[demographicKey][value]) {
-          demographics[demographicKey][value] = {
+      if (demographics[key] && value && value.trim() !== '') {
+        if (!demographics[key][value]) {
+          demographics[key][value] = {
             count: 0,
             averageScore: 0,
             percentage: 0
           };
         }
         
-        const current = demographics[demographicKey][value];
+        const current = demographics[key][value];
         // Update running average
         const newCount = current.count + 1;
         const newAverage = (current.averageScore * current.count + userAverage) / newCount;
         
-        demographics[demographicKey][value] = {
+        demographics[key][value] = {
           count: newCount,
           averageScore: Math.round(newAverage * 100) / 100,
           percentage: 0 // Will be calculated later
@@ -148,10 +142,9 @@ function analyzeDemographics(allResponses: CompletedSurvey[]): SurveyAnalytics['
   // Calculate percentages
   const totalResponses = allResponses.length;
   Object.keys(demographics).forEach(key => {
-    const demographicKey = key as keyof typeof demographics;
-    Object.keys(demographics[demographicKey]).forEach(value => {
-      demographics[demographicKey][value].percentage = Math.round(
-        (demographics[demographicKey][value].count / totalResponses) * 100
+    Object.keys(demographics[key]).forEach(value => {
+      demographics[key][value].percentage = Math.round(
+        (demographics[key][value].count / totalResponses) * 100
       );
     });
   });

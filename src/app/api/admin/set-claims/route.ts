@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { setAdminClaim, verifyAndGetUser } from '@/lib/firebaseAdmin';
+import { getOrganizationFromEmail } from '@/lib/organizationService';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,10 +26,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify the requesting user is from @kyanhealth.com domain
-    if (!decodedToken.email?.endsWith('@kyanhealth.com')) {
+    // Verify the requesting user is from a valid organization domain
+    if (!decodedToken.email) {
       return NextResponse.json(
-        { error: 'Unauthorized: Only @kyanhealth.com users can set admin claims' },
+        { error: 'Unauthorized: Email is required' },
+        { status: 403 }
+      );
+    }
+    
+    const organization = await getOrganizationFromEmail(decodedToken.email);
+    if (!organization) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Only users from valid organization domains can set admin claims' },
         { status: 403 }
       );
     }

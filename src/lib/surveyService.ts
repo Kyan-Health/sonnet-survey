@@ -1,12 +1,12 @@
 import { collection, addDoc, doc, getDoc, setDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { CompletedSurvey, SurveyResponse, DemographicResponse } from '@/data/surveyData';
+import { CompletedSurvey, SurveyResponse, DynamicDemographicResponse } from '@/data/surveyData';
 
 export async function submitSurvey(
   userId: string,
   userEmail: string,
   responses: SurveyResponse[],
-  demographics: DemographicResponse,
+  demographics: DynamicDemographicResponse,
   organizationId: string,
   organizationName: string
 ): Promise<string> {

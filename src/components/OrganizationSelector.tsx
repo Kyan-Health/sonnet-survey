@@ -19,6 +19,7 @@ export default function OrganizationSelector({
     isLoading 
   } = useOrganization();
 
+
   if (isLoading) {
     return (
       <div className={`animate-pulse ${className}`}>
@@ -27,8 +28,8 @@ export default function OrganizationSelector({
     );
   }
 
-  if (!isAdmin || availableOrganizations.length <= 1) {
-    // Non-admins or single organization - show current org as text
+  if (!isAdmin) {
+    // Non-admins - show current org as text only
     return (
       <div className={className}>
         {showLabel && (
@@ -66,7 +67,9 @@ export default function OrganizationSelector({
         }}
         className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       >
-        <option value="">All Organizations</option>
+        {availableOrganizations.length > 1 && (
+          <option value="">All Organizations</option>
+        )}
         {availableOrganizations.map((org) => (
           <option key={org.id} value={org.id}>
             {org.displayName}

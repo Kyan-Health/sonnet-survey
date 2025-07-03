@@ -40,7 +40,7 @@ export default function Home() {
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-8">Sonnet Survey</h1>
           <p className="text-gray-600 mb-8">
-            Please sign in with your @kyanhealth.com account
+            Please sign in with your organization account
           </p>
           <LoginButton />
         </div>
