@@ -120,9 +120,10 @@ The application uses Firebase Authentication custom claims to manage admin acces
 
 3. **Bootstrap Admin Access**:
    - Sign in as `ignacio@kyanhealth.com`
-   - Visit `/admin` - you'll see a "Bootstrap Admin Access" button
-   - Click to grant yourself admin privileges
-   - This will set the `admin: true` custom claim on your user
+   - Visit `/admin` - you'll see a "Bootstrap Admin Access" button  
+   - Click to grant yourself admin privileges using client-side Firebase Admin SDK
+   - This sets the `admin: true` custom claim on your user
+   - Refresh the page to see admin interface
 
 #### Adding Additional Admins
 
@@ -166,6 +167,18 @@ const response = await fetch('/api/admin/set-claims', {
    - For each organization, click "Survey Types"
    - Select which survey types are available
    - Set a default survey type
+
+3. **Customize Questions** (Optional):
+   - Click "Questions" for any organization
+   - Use SurveyQuestionSelector to customize which questions are included
+   - Maintain adequate factor coverage for survey validity
+   - Save question selection with automatic versioning
+
+4. **Migration Support**:
+   - System automatically detects organizations needing migration
+   - "Sync System Defaults" button handles both new installations and updates
+   - Existing question selections are preserved during migration
+   - See [Migration Guide](MIGRATION.md) for detailed procedures
 
 ### Organization Management
 
@@ -238,10 +251,30 @@ For production deployment:
 
 ## API Endpoints
 
-- `POST /api/admin/make-me-admin` - Bootstrap admin access (ignacio@kyanhealth.com only)
+### Admin Authentication
 - `POST /api/admin/set-claims` - Set admin claims for other users (admins only)
 
-Both endpoints require valid Firebase ID tokens and perform server-side verification.
+### Set Admin Claims
+```typescript
+// POST /api/admin/set-claims
+{
+  "idToken": "admin-firebase-id-token",
+  "targetUid": "target-user-uid",
+  "isAdmin": true
+}
+
+// Response
+{
+  "success": true,
+  "message": "Admin claims updated successfully"
+}
+```
+
+**Security Notes:**
+- All endpoints require valid Firebase ID tokens
+- Server-side verification of token authenticity  
+- Set claims endpoint requires existing admin privileges
+- Bootstrap admin access is handled through admin interface with built-in restrictions
 
 ## Mobile Considerations
 

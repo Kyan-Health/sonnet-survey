@@ -93,11 +93,14 @@ src/
 │   │   ├── survey-types/        # Survey type management
 │   │   └── users/              # User management
 │   ├── api/                    # API routes for admin functions
+│   │   └── admin/              # Admin-specific endpoints
 │   └── survey/                 # Dynamic survey interface
 ├── components/                 # Reusable React components
 │   ├── DemographicForm.tsx     # Dynamic demographics form
 │   ├── SurveyTypeSelector.tsx  # Survey type configuration
-│   └── OrganizationSelector.tsx # Organization filter
+│   ├── SurveyQuestionSelector.tsx # Custom question selection interface
+│   ├── OrganizationSelector.tsx # Organization filter
+│   └── DemographicManagementModal.tsx # Demographics management
 ├── contexts/                   # React context providers
 │   ├── AuthContext.tsx         # Authentication state
 │   └── OrganizationContext.tsx # Organization selection
@@ -108,7 +111,10 @@ src/
 │   ├── analytics.ts           # Multi-survey analytics
 │   ├── surveyService.ts       # Survey CRUD operations
 │   ├── surveyTypeService.ts   # Survey type management
-│   └── organizationService.ts # Organization management
+│   ├── organizationService.ts # Organization management
+│   ├── migrationUtils.ts      # System migration utilities
+│   ├── admin.ts              # Admin authentication helpers
+│   └── firebase.ts           # Firebase configuration
 └── types/                     # TypeScript type definitions
     ├── surveyType.ts          # Survey type interfaces
     └── organization.ts        # Organization interfaces
@@ -250,6 +256,13 @@ npm run lint
 # Test mobile responsiveness
 npm run dev  # Test on various device sizes using browser dev tools
 ```
+
+## 📚 Additional Documentation
+
+- **[Migration Guide](MIGRATION.md)** - System migration utilities and procedures
+- **[Survey Question Management](SURVEY_QUESTION_MANAGEMENT.md)** - Custom question selection for organizations
+- **[Admin Setup](ADMIN_SETUP.md)** - Complete admin configuration guide
+- **[Technical Notes](CLAUDE.md)** - Development reference and architecture details
 
 ## 📝 License
 
