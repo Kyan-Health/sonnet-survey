@@ -1,5 +1,5 @@
 import { getSurveyResponsesByOrganization } from './surveyService';
-import { getAllSurveyQuestions, SURVEY_FACTORS, getQuestionsByFactor, CompletedSurvey } from '@/data/surveyData';
+import { getAllSurveyQuestions, getAvailableFactors, getQuestionsByFactor, CompletedSurvey } from '@/data/surveyData';
 
 export interface FactorAnalysis {
   factor: string;
@@ -44,8 +44,8 @@ function calculateDistribution(responses: number[]): { [rating: number]: number 
   return distribution;
 }
 
-function analyzeQuestion(questionId: string, allResponses: CompletedSurvey[], organizationName?: string): QuestionAnalysis {
-  const surveyQuestions = getAllSurveyQuestions(organizationName);
+function analyzeQuestion(questionId: string, allResponses: CompletedSurvey[], organizationName?: string, selectedQuestionIds?: string[]): QuestionAnalysis {
+  const surveyQuestions = getAllSurveyQuestions(organizationName, selectedQuestionIds);
   const questionData = surveyQuestions.find(q => q.id === questionId);
   if (!questionData) {
     throw new Error(`Question not found: ${questionId}`);
@@ -73,9 +73,9 @@ function analyzeQuestion(questionId: string, allResponses: CompletedSurvey[], or
   };
 }
 
-function analyzeFactor(factor: string, allResponses: CompletedSurvey[], organizationName?: string): FactorAnalysis {
-  const factorQuestions = getQuestionsByFactor(factor, organizationName);
-  const questionAnalyses = factorQuestions.map(q => analyzeQuestion(q.id, allResponses, organizationName));
+function analyzeFactor(factor: string, allResponses: CompletedSurvey[], organizationName?: string, selectedQuestionIds?: string[]): FactorAnalysis {
+  const factorQuestions = getQuestionsByFactor(factor, organizationName, selectedQuestionIds);
+  const questionAnalyses = factorQuestions.map(q => analyzeQuestion(q.id, allResponses, organizationName, selectedQuestionIds));
   
   const totalScore = questionAnalyses.reduce((sum, qa) => sum + (qa.averageScore * qa.responseCount), 0);
   const totalResponses = questionAnalyses.reduce((sum, qa) => sum + qa.responseCount, 0);
@@ -153,7 +153,7 @@ function analyzeDemographics(allResponses: CompletedSurvey[]): SurveyAnalytics['
   return demographics;
 }
 
-export async function getSurveyAnalytics(organizationId?: string, organizationName?: string): Promise<SurveyAnalytics> {
+export async function getSurveyAnalytics(organizationId?: string, organizationName?: string, selectedQuestionIds?: string[]): Promise<SurveyAnalytics> {
   try {
     const allResponses = await getSurveyResponsesByOrganization(organizationId);
     
@@ -180,8 +180,9 @@ export async function getSurveyAnalytics(organizationId?: string, organizationNa
       };
     }
 
-    // Use all responses for factor analysis with organization-specific questions
-    const factorAnalysis = SURVEY_FACTORS.map(factor => analyzeFactor(factor, allResponses, organizationName));
+    // Use all responses for factor analysis with organization-specific custom questions
+    const availableFactors = getAvailableFactors(selectedQuestionIds);
+    const factorAnalysis = availableFactors.map(factor => analyzeFactor(factor, allResponses, organizationName, selectedQuestionIds));
     
     // Calculate overall metrics using all responses
     const allRatings: number[] = [];
@@ -198,7 +199,7 @@ export async function getSurveyAnalytics(organizationId?: string, organizationNa
     const responseDistribution = calculateDistribution(allRatings);
 
     // Calculate completion rate (assuming we have a way to track total invited users)
-    const surveyQuestions = getAllSurveyQuestions(organizationName);
+    const surveyQuestions = getAllSurveyQuestions(organizationName, selectedQuestionIds);
     const totalQuestions = surveyQuestions.length;
     const expectedTotalResponses = allResponses.length * totalQuestions;
     const actualTotalResponses = allRatings.length;

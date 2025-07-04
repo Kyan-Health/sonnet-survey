@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useOrganization } from '@/contexts/OrganizationContext';
 import { 
-  SURVEY_FACTORS, 
+  getAvailableFactors,
   RATING_LABELS, 
   getQuestionsByFactor,
   SurveyResponse,
@@ -155,10 +155,15 @@ export default function SurveyPage() {
     );
   }
 
-  // Survey questions flow
-  const currentFactorName = SURVEY_FACTORS[currentFactor];
-  const currentQuestions = getQuestionsByFactor(currentFactorName, currentOrganization?.displayName);
-  const totalFactors = SURVEY_FACTORS.length;
+  // Survey questions flow - use organization's custom questions
+  const availableFactors = getAvailableFactors(currentOrganization?.selectedQuestions);
+  const currentFactorName = availableFactors[currentFactor];
+  const currentQuestions = getQuestionsByFactor(
+    currentFactorName, 
+    currentOrganization?.displayName,
+    currentOrganization?.selectedQuestions
+  );
+  const totalFactors = availableFactors.length;
   const surveyProgressPercentage = ((currentFactor + 1) / totalFactors) * 75; // 75% for survey portion
   const totalProgressPercentage = 25 + surveyProgressPercentage; // 25% for demographics + survey progress
 

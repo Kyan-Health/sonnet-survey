@@ -481,30 +481,82 @@ export function generateSurveyQuestions(organizationName: string): SurveyQuestio
   }));
 }
 
-// Legacy function - generates questions using templates (backward compatibility)
-export function getQuestionsByFactor(factor: string, organizationName?: string): SurveyQuestion[] {
-  const questions = organizationName 
-    ? generateSurveyQuestions(organizationName)
-    : SURVEY_QUESTION_TEMPLATES.map(template => ({
-        id: template.id,
-        factor: template.factor,
-        subFactor: template.subFactor,
-        question: template.questionTemplate.replace(/{organization}/g, 'the organization')
-      }));
+// Generate organization-specific questions based on their selection
+export function generateCustomSurveyQuestions(organizationName: string, selectedQuestionIds?: string[]): SurveyQuestion[] {
+  // If no selection provided, use all questions
+  if (!selectedQuestionIds || selectedQuestionIds.length === 0) {
+    return generateSurveyQuestions(organizationName);
+  }
   
+  // Filter templates to only include selected questions
+  const selectedTemplates = SURVEY_QUESTION_TEMPLATES.filter(template => 
+    selectedQuestionIds.includes(template.id)
+  );
+  
+  return selectedTemplates.map(template => ({
+    id: template.id,
+    factor: template.factor,
+    subFactor: template.subFactor,
+    question: template.questionTemplate.replace(/{organization}/g, organizationName)
+  }));
+}
+
+// Get available factors for an organization (only factors with selected questions)
+export function getAvailableFactors(selectedQuestionIds?: string[]): string[] {
+  if (!selectedQuestionIds || selectedQuestionIds.length === 0) {
+    return SURVEY_FACTORS;
+  }
+  
+  // Find which factors have at least one selected question
+  const factorsWithQuestions = new Set<string>();
+  
+  selectedQuestionIds.forEach(questionId => {
+    const template = SURVEY_QUESTION_TEMPLATES.find(t => t.id === questionId);
+    if (template) {
+      factorsWithQuestions.add(template.factor);
+    }
+  });
+  
+  // Return factors in original order
+  return SURVEY_FACTORS.filter(factor => factorsWithQuestions.has(factor));
+}
+
+// Enhanced function - supports custom question selection
+export function getQuestionsByFactor(factor: string, organizationName?: string, selectedQuestionIds?: string[]): SurveyQuestion[] {
+  const questions = generateCustomSurveyQuestions(organizationName || 'the organization', selectedQuestionIds);
   return questions.filter(q => q.factor === factor);
 }
 
-// New function to get all questions for an organization
-export function getAllSurveyQuestions(organizationName?: string): SurveyQuestion[] {
-  return organizationName 
-    ? generateSurveyQuestions(organizationName)
-    : SURVEY_QUESTION_TEMPLATES.map(template => ({
-        id: template.id,
-        factor: template.factor,
-        subFactor: template.subFactor,
-        question: template.questionTemplate.replace(/{organization}/g, 'the organization')
-      }));
+// New function to get all questions for an organization (with custom selection support)
+export function getAllSurveyQuestions(organizationName?: string, selectedQuestionIds?: string[]): SurveyQuestion[] {
+  return generateCustomSurveyQuestions(organizationName || 'the organization', selectedQuestionIds);
+}
+
+// Get question statistics for organization customization
+export function getQuestionStats(selectedQuestionIds?: string[]) {
+  const totalQuestions = SURVEY_QUESTION_TEMPLATES.length;
+  const selectedCount = selectedQuestionIds?.length || totalQuestions;
+  
+  const factorStats: Record<string, { total: number; selected: number }> = {};
+  
+  SURVEY_FACTORS.forEach(factor => {
+    const factorQuestions = SURVEY_QUESTION_TEMPLATES.filter(t => t.factor === factor);
+    const selectedInFactor = selectedQuestionIds 
+      ? factorQuestions.filter(t => selectedQuestionIds.includes(t.id)).length
+      : factorQuestions.length;
+    
+    factorStats[factor] = {
+      total: factorQuestions.length,
+      selected: selectedInFactor
+    };
+  });
+  
+  return {
+    totalQuestions,
+    selectedCount,
+    factorStats,
+    selectionPercentage: Math.round((selectedCount / totalQuestions) * 100)
+  };
 }
 
 // Backward compatibility - keeping the old SURVEY_QUESTIONS export

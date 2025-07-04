@@ -13,6 +13,7 @@ import {
   deleteOrganization
 } from '@/lib/organizationService';
 import DemographicManagementModal from '@/components/DemographicManagementModal';
+import SurveyQuestionSelector from '@/components/SurveyQuestionSelector';
 
 export default function OrganizationsManagementPage() {
   const { user, loading } = useAuth();
@@ -26,6 +27,8 @@ export default function OrganizationsManagementPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDemographicsModal, setShowDemographicsModal] = useState(false);
   const [selectedOrgForDemographics, setSelectedOrgForDemographics] = useState<Organization | null>(null);
+  const [showQuestionsModal, setShowQuestionsModal] = useState(false);
+  const [selectedOrgForQuestions, setSelectedOrgForQuestions] = useState<Organization | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -196,6 +199,23 @@ export default function OrganizationsManagementPage() {
   };
 
   const handleDemographicsSave = (updatedOrg: Organization) => {
+    // Update the organization in the local state
+    setOrganizations(prevOrgs => 
+      prevOrgs.map(org => org.id === updatedOrg.id ? updatedOrg : org)
+    );
+  };
+
+  const openQuestionsModal = (org: Organization) => {
+    setSelectedOrgForQuestions(org);
+    setShowQuestionsModal(true);
+  };
+
+  const closeQuestionsModal = () => {
+    setShowQuestionsModal(false);
+    setSelectedOrgForQuestions(null);
+  };
+
+  const handleQuestionsSave = (updatedOrg: Organization) => {
     // Update the organization in the local state
     setOrganizations(prevOrgs => 
       prevOrgs.map(org => org.id === updatedOrg.id ? updatedOrg : org)
@@ -430,6 +450,12 @@ export default function OrganizationsManagementPage() {
                           Demographics
                         </button>
                         <button
+                          onClick={() => openQuestionsModal(org)}
+                          className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-2 rounded text-xs"
+                        >
+                          Questions
+                        </button>
+                        <button
                           onClick={() => handleToggleStatus(org.id)}
                           className={`font-bold py-1 px-2 rounded text-xs ${
                             org.isActive
@@ -470,6 +496,16 @@ export default function OrganizationsManagementPage() {
           isOpen={showDemographicsModal}
           onClose={closeDemographicsModal}
           onSave={handleDemographicsSave}
+        />
+      )}
+
+      {/* Survey Questions Management Modal */}
+      {selectedOrgForQuestions && (
+        <SurveyQuestionSelector
+          organization={selectedOrgForQuestions}
+          isOpen={showQuestionsModal}
+          onClose={closeQuestionsModal}
+          onSave={handleQuestionsSave}
         />
       )}
     </div>

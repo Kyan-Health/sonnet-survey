@@ -19,6 +19,9 @@ export interface Organization {
     customBranding?: boolean;
   };
   demographicQuestions?: DemographicQuestion[]; // Custom demographic questions
+  selectedQuestions?: string[]; // Array of survey question IDs this organization uses
+  questionSetVersion?: number; // Version tracking for question changes
+  lastQuestionUpdate?: Date; // When questions were last modified
   createdAt: Date;
   updatedAt: Date;
   isActive: boolean;
