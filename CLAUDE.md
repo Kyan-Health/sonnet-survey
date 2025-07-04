@@ -34,7 +34,7 @@ firebase deploy
 ### Database Management
 ```bash
 # Initialize survey types (run once after setup)
-# Access /admin/survey-types and click "Create System Defaults"
+# Access /admin/survey-types and click "Sync System Defaults"
 
 # Backup Firestore data
 firebase firestore:delete --all-collections --force  # BE CAREFUL!
@@ -65,10 +65,15 @@ Each survey type is defined with:
    - Mixed 5-point and 7-point scales
    - Workplace psychosocial risk assessment
 
+4. **COPSOC II Short** (copsoc-ii-short)
+   - 36 questions across 19 psychosocial risk factors
+   - Specialized COPSOC rating scales (frequency, extent, satisfaction, health, time-frequency)
+   - Research-validated Copenhagen Psychosocial Questionnaire II
+
 ### Adding New Survey Types
 1. Define survey type in `/src/data/surveyTypes.ts`
 2. Add to `SYSTEM_SURVEY_TYPES` array
-3. Deploy and use admin interface to create
+3. Deploy and use admin interface to sync system defaults
 
 ## 🏗️ Architecture Notes
 
@@ -106,9 +111,17 @@ Each survey type is defined with:
 ### Color Coding
 - **Blue**: Primary actions, engagement surveys
 - **Red**: Danger actions, burnout/stress indicators
-- **Green**: Success states, positive scores
+- **Green**: Success states, positive scores, wellbeing surveys
 - **Purple**: Admin functions, special features
 - **Gray**: Secondary actions, disabled states
+
+### COPSOC II Rating Scales
+- **COPSOC_FREQUENCY**: 0-4 (Never/hardly ever → Always)
+- **COPSOC_EXTENT**: 0-4 (To a very small extent → To a very large extent)
+- **COPSOC_SATISFACTION**: 0-3 (Very unsatisfied → Very satisfied)
+- **COPSOC_HEALTH**: 0-4 (Poor → Excellent)
+- **COPSOC_TIME_FREQUENCY**: 0-4 (Not at all → All the time)
+- **COPSOC_WORK_LIFE**: 0-3 (No, not at all → Yes, certainly)
 
 ## 🔐 Security Implementation
 

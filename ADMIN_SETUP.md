@@ -155,10 +155,11 @@ const response = await fetch('/api/admin/set-claims', {
 
 1. **Initialize System Survey Types**:
    - Navigate to `/admin/survey-types`
-   - Click "Create System Defaults" to initialize:
-     - Employee Engagement Survey (73 questions)
-     - MBI Burnout Assessment (22 questions)
-     - COPSOC Workplace Factors (40+ questions)
+   - Click "Sync System Defaults" to initialize:
+     - Employee Engagement Survey (73 questions across 15 factors)
+     - MBI Burnout Assessment (22 questions across 3 factors)
+     - COPSOC Workplace Factors (40+ questions across 8 factors)
+     - COPSOC II Short (36 questions across 19 psychosocial risk factors)
 
 2. **Configure Organizations**:
    - Go to `/admin/organizations`

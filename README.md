@@ -15,8 +15,9 @@ A comprehensive, mobile-responsive employee experience survey application built 
 - **Employee Engagement Survey** (73 questions across 15 factors)
 - **MBI Burnout Assessment** (22 questions with 0-6 frequency scale)
 - **COPSOC Workplace Factors** (40+ questions across 8 psychosocial dimensions)
+- **COPSOC II Short** (36 questions across 19 psychosocial risk factors)
 - **Survey type selection interface** for organizations with multiple surveys
-- **Flexible rating scales** (5-point Likert, 7-point, frequency-based, MBI scale)
+- **Flexible rating scales** (5-point Likert, 7-point, frequency-based, MBI scale, COPSOC scales)
 - **Organization-level survey configuration** with admin controls
 
 ### 👥 Dynamic Demographics Collection
@@ -138,6 +139,7 @@ The application supports multiple survey types defined in `src/data/surveyTypes.
 - **Employee Engagement** - 73 questions across 15 workplace factors
 - **MBI Burnout Assessment** - 22 research-validated burnout questions
 - **COPSOC** - 40+ psychosocial workplace factor questions
+- **COPSOC II Short** - 36 questions across 19 psychosocial risk factors
 
 #### Creating Custom Survey Types:
 1. Access `/admin/survey-types` to manage survey types
@@ -197,6 +199,7 @@ The admin dashboard provides comprehensive analytics across all survey types:
 - **Employee Engagement** - 15-factor workplace satisfaction analysis
 - **MBI Burnout** - Exhaustion, cynicism, and efficacy scoring
 - **COPSOC** - Psychosocial workplace risk assessment
+- **COPSOC II Short** - 19-factor psychosocial risk assessment with specialized scoring
 
 ## 🔒 Security Features
 
@@ -263,6 +266,12 @@ This project is proprietary to Kyan Health.
 7. Submit a pull request with detailed description
 
 ## 📋 Recent Updates
+
+### v2.1.0 - COPSOC II Short Addition
+- ✅ **COPSOC II Short survey type** with 36 questions across 19 factors
+- ✅ **Specialized COPSOC rating scales** for different question types
+- ✅ **Comprehensive psychosocial risk assessment** capabilities
+- ✅ **Research-validated Copenhagen Psychosocial Questionnaire II** implementation
 
 ### v2.0.0 - Multi-Survey System & Mobile Responsiveness
 - ✅ **Multi-survey support** with Employee Engagement, MBI, and COPSOC

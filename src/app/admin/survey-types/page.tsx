@@ -168,14 +168,13 @@ export default function SurveyTypesManagementPage() {
               <p className="text-sm sm:text-base text-gray-600">Manage different survey types and their configurations</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              {surveyTypes.length === 0 && (
-                <button
-                  onClick={handleCreateSystemDefaults}
-                  className="w-full sm:w-auto bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base touch-manipulation"
-                >
-                  Create System Defaults
-                </button>
-              )}
+              {/* Always show sync button to handle new system defaults */}
+              <button
+                onClick={handleCreateSystemDefaults}
+                className="w-full sm:w-auto bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base touch-manipulation"
+              >
+                {surveyTypes.length === 0 ? 'Create System Defaults' : 'Sync System Defaults'}
+              </button>
               <Link
                 href="/admin"
                 className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-center text-sm sm:text-base touch-manipulation"

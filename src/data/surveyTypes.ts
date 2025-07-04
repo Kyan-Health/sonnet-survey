@@ -881,11 +881,319 @@ export const COPSOC_WELLBEING_SURVEY: SurveyTypeConfig = {
   ]
 };
 
+// COPSOC II Short Survey Type
+export const COPSOC_II_SHORT_SURVEY: SurveyTypeConfig = {
+  id: 'copsoc-ii-short',
+  metadata: {
+    name: 'copsoc-ii-short',
+    displayName: 'COPSOC II Short',
+    description: 'Copenhagen Psychosocial Questionnaire II Short Form - Workplace psychosocial risk assessment',
+    version: '1.0',
+    researchBasis: 'Copenhagen Psychosocial Questionnaire II (COPSOC II)',
+    category: 'wellbeing',
+    recommendedFrequency: 'Annually',
+    estimatedTime: 10
+  },
+  defaultRatingScale: RATING_SCALES.COPSOC_FREQUENCY,
+  questionTemplates: [
+    // 1. Quantitative demands (Questions 1A & 1B)
+    {
+      factor: "Quantitative Demands",
+      questionTemplate: "Do you get behind with your work?",
+      order: 1,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_FREQUENCY
+    },
+    {
+      factor: "Quantitative Demands", 
+      questionTemplate: "Do you have enough time for your work tasks?",
+      order: 2,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_FREQUENCY
+    },
+
+    // 2. Work pace (Questions 2A & 2B)
+    {
+      factor: "Work Pace",
+      questionTemplate: "Is it necessary to keep working at a high pace?",
+      order: 3,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_FREQUENCY
+    },
+    {
+      factor: "Work Pace",
+      questionTemplate: "Do you work at a high pace throughout the day?",
+      order: 4,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_FREQUENCY
+    },
+
+    // 3. Emotional demands (Questions 3A & 3B)
+    {
+      factor: "Emotional Demands",
+      questionTemplate: "Does your work put you in emotionally disturbing situations?",
+      order: 5,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_FREQUENCY
+    },
+    {
+      factor: "Emotional Demands",
+      questionTemplate: "Do you have to relate to other people's personal problems as part of your work?",
+      order: 6,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_FREQUENCY
+    },
+
+    // 4. Influence at work (Questions 4A & 4B)
+    {
+      factor: "Influence at Work",
+      questionTemplate: "Do you have a large degree of influence concerning your work?",
+      order: 7,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Influence at Work",
+      questionTemplate: "Can you influence the amount of work assigned to you?",
+      order: 8,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 5. Possibilities for development (Questions 5A & 5B)
+    {
+      factor: "Possibilities for Development",
+      questionTemplate: "Do you have the possibility of learning new things through your work?",
+      order: 9,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Possibilities for Development",
+      questionTemplate: "Does your work require you to take the initiative?",
+      order: 10,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 6. Meaning of work (Questions 6A & 6B)
+    {
+      factor: "Meaning of Work",
+      questionTemplate: "Is your work meaningful?",
+      order: 11,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Meaning of Work",
+      questionTemplate: "Do you feel that the work you do is important?",
+      order: 12,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 7. Commitment to the workplace (Questions 7A & 7B)
+    {
+      factor: "Commitment to Workplace",
+      questionTemplate: "Do you feel that your place of work is of great importance to you?",
+      order: 13,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Commitment to Workplace",
+      questionTemplate: "Would you recommend a good friend to apply for a position at your workplace?",
+      order: 14,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 8. Predictability (Questions 8A & 8B)
+    {
+      factor: "Predictability",
+      questionTemplate: "At your place of work, are you informed well in advance concerning for example important decisions, changes, or plans for the future?",
+      order: 15,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Predictability",
+      questionTemplate: "Do you receive all the information you need in order to do your work well?",
+      order: 16,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 9. Recognition (Questions 9A & 9B)
+    {
+      factor: "Recognition",
+      questionTemplate: "Is your work recognised and appreciated by the management?",
+      order: 17,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Recognition",
+      questionTemplate: "Are you treated fairly at your workplace?",
+      order: 18,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 10. Role clarity (Questions 10A & 10B)
+    {
+      factor: "Role Clarity",
+      questionTemplate: "Does your work have clear objectives?",
+      order: 19,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Role Clarity",
+      questionTemplate: "Do you know exactly what is expected of you at work?",
+      order: 20,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 11. Quality of leadership (Questions 11A & 11B)
+    {
+      factor: "Quality of Leadership",
+      questionTemplate: "To what extent would you say that your immediate superior gives high priority to job satisfaction?",
+      order: 21,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Quality of Leadership",
+      questionTemplate: "To what extent would you say that your immediate superior is good at work planning?",
+      order: 22,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 12. Social support from supervisor (Questions 12A & 12B)
+    {
+      factor: "Social Support from Supervisor",
+      questionTemplate: "How often is your nearest superior willing to listen to your problems at work?",
+      order: 23,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_FREQUENCY
+    },
+    {
+      factor: "Social Support from Supervisor",
+      questionTemplate: "How often do you get help and support from your nearest superior?",
+      order: 24,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_FREQUENCY
+    },
+
+    // 13. Job satisfaction (Question 13)
+    {
+      factor: "Job Satisfaction",
+      questionTemplate: "Regarding your work in general. How pleased are you with your job as a whole, everything taken into consideration?",
+      order: 25,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_SATISFACTION
+    },
+
+    // 14. Work-family conflict (Questions 14A & 14B)
+    {
+      factor: "Work-Family Conflict",
+      questionTemplate: "Do you feel that your work drains so much of your energy that it has a negative effect on your private life?",
+      order: 26,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_WORK_LIFE
+    },
+    {
+      factor: "Work-Family Conflict",
+      questionTemplate: "Do you feel that your work takes so much of your time that it has a negative effect on your private life?",
+      order: 27,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_WORK_LIFE
+    },
+
+    // 15. Trust regarding management (Questions 15A & 15B)
+    {
+      factor: "Trust Regarding Management",
+      questionTemplate: "Can you trust the information that comes from the management?",
+      order: 28,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Trust Regarding Management",
+      questionTemplate: "Does the management trust the employees to do their work well?",
+      order: 29,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 16. Justice and respect (Questions 16A & 16B)
+    {
+      factor: "Justice and Respect",
+      questionTemplate: "Are conflicts resolved in a fair way?",
+      order: 30,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+    {
+      factor: "Justice and Respect",
+      questionTemplate: "Is the work distributed fairly?",
+      order: 31,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_EXTENT
+    },
+
+    // 17. General health (Question 17)
+    {
+      factor: "General Health",
+      questionTemplate: "In general, would you say your health is:",
+      order: 32,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_HEALTH
+    },
+
+    // 18. Burnout (Questions 18A & 18B)
+    {
+      factor: "Burnout",
+      questionTemplate: "How often have you felt worn out?",
+      order: 33,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_TIME_FREQUENCY
+    },
+    {
+      factor: "Burnout",
+      questionTemplate: "How often have you been emotionally exhausted?",
+      order: 34,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_TIME_FREQUENCY
+    },
+
+    // 19. Stress (Questions 19A & 19B)
+    {
+      factor: "Stress",
+      questionTemplate: "How often have you been stressed?",
+      order: 35,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_TIME_FREQUENCY
+    },
+    {
+      factor: "Stress",
+      questionTemplate: "How often have you been irritable?",
+      order: 36,
+      required: true,
+      ratingScale: RATING_SCALES.COPSOC_TIME_FREQUENCY
+    }
+  ]
+};
+
 // Export all survey type configurations
 export const SYSTEM_SURVEY_TYPES = [
   EMPLOYEE_ENGAGEMENT_SURVEY,
   MBI_BURNOUT_SURVEY,
-  COPSOC_WELLBEING_SURVEY
+  COPSOC_WELLBEING_SURVEY,
+  COPSOC_II_SHORT_SURVEY
 ];
 
 export default SYSTEM_SURVEY_TYPES;
