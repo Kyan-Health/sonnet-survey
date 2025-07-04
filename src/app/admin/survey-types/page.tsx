@@ -158,27 +158,27 @@ export default function SurveyTypesManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex justify-between items-start">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Survey Types Management</h1>
-              <p className="text-gray-600">Manage different survey types and their configurations</p>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Survey Types Management</h1>
+              <p className="text-sm sm:text-base text-gray-600">Manage different survey types and their configurations</p>
             </div>
-            <div className="space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               {surveyTypes.length === 0 && (
                 <button
                   onClick={handleCreateSystemDefaults}
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                  className="w-full sm:w-auto bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base touch-manipulation"
                 >
                   Create System Defaults
                 </button>
               )}
               <Link
                 href="/admin"
-                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-center text-sm sm:text-base touch-manipulation"
               >
                 Back to Dashboard
               </Link>
@@ -187,20 +187,92 @@ export default function SurveyTypesManagementPage() {
         </div>
 
         {/* Survey Types List */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Survey Types</h2>
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Survey Types</h2>
           
           {isLoadingSurveyTypes ? (
             <div className="text-center py-8">
-              <div className="text-lg">Loading survey types...</div>
+              <div className="text-base sm:text-lg">Loading survey types...</div>
             </div>
           ) : error ? (
             <div className="text-center py-8">
               <div className="text-red-600">{error}</div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+            <>
+              {/* Mobile Card Layout */}
+              <div className="block sm:hidden space-y-4">
+                {surveyTypes.map((surveyType) => (
+                  <div key={surveyType.id} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <h3 className="text-sm font-medium text-gray-900 truncate">
+                            {surveyType.metadata.displayName}
+                          </h3>
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            surveyType.metadata.category === 'engagement' ? 'bg-blue-100 text-blue-800' :
+                            surveyType.metadata.category === 'burnout' ? 'bg-red-100 text-red-800' :
+                            surveyType.metadata.category === 'wellbeing' ? 'bg-green-100 text-green-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {surveyType.metadata.category}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-2">
+                          {surveyType.metadata.description}
+                        </p>
+                        {surveyType.metadata.researchBasis && (
+                          <p className="text-xs text-blue-600 mb-2">
+                            Based on: {surveyType.metadata.researchBasis}
+                          </p>
+                        )}
+                      </div>
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ml-2 ${
+                        surveyType.isActive 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {surveyType.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 mb-3">
+                      <span>{surveyType.questions.length} questions</span>
+                      <span>{surveyType.factors.length} factors</span>
+                      <span>{surveyType.createdAt.toLocaleDateString()}</span>
+                      {surveyType.isSystemDefault && (
+                        <span className="text-purple-600 font-medium">System Default</span>
+                      )}
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1">
+                      <button
+                        onClick={() => handleToggleStatus(surveyType.id)}
+                        className={`font-bold py-1 px-2 rounded text-xs touch-manipulation ${
+                          surveyType.isActive
+                            ? 'bg-red-500 hover:bg-red-600 active:bg-red-700 text-white'
+                            : 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-white'
+                        }`}
+                      >
+                        {surveyType.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                      {!surveyType.isSystemDefault && (
+                        <button
+                          onClick={() => handleDelete(surveyType.id, surveyType.metadata.displayName)}
+                          className="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs touch-manipulation"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Desktop Table Layout */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -296,7 +368,8 @@ export default function SurveyTypesManagementPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+              </div>
+            </>
           )}
 
           {surveyTypes.length === 0 && !isLoadingSurveyTypes && !error && (
@@ -304,7 +377,7 @@ export default function SurveyTypesManagementPage() {
               <div className="text-gray-500 mb-4">No survey types found.</div>
               <button
                 onClick={handleCreateSystemDefaults}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                className="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-2 px-4 rounded touch-manipulation"
               >
                 Create System Default Survey Types
               </button>

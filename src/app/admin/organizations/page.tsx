@@ -276,25 +276,25 @@ export default function OrganizationsManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex justify-between items-start">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Organization Management</h1>
-              <p className="text-gray-600">Manage organizations and their domains</p>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Organization Management</h1>
+              <p className="text-sm sm:text-base text-gray-600">Manage organizations and their domains</p>
             </div>
-            <div className="space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                className="w-full sm:w-auto bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base touch-manipulation"
               >
                 Add Organization
               </button>
               <Link
                 href="/admin"
-                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-center text-sm sm:text-base touch-manipulation"
               >
                 Back to Dashboard
               </Link>
@@ -304,8 +304,8 @@ export default function OrganizationsManagementPage() {
 
         {/* Create/Edit Form */}
         {showCreateForm && (
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
               {editingOrg ? 'Edit Organization' : 'Create New Organization'}
             </h2>
             <form onSubmit={editingOrg ? handleUpdateOrganization : handleCreateOrganization}>
@@ -372,18 +372,18 @@ export default function OrganizationsManagementPage() {
                   <span className="text-sm text-gray-700">Enable custom branding</span>
                 </label>
               </div>
-              <div className="flex space-x-2 mt-6">
+              <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2 mt-6">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded"
+                  className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded touch-manipulation"
                 >
                   {isSubmitting ? 'Saving...' : (editingOrg ? 'Update' : 'Create')} Organization
                 </button>
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                  className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white font-bold py-2 px-4 rounded touch-manipulation"
                 >
                   Cancel
                 </button>
@@ -393,20 +393,97 @@ export default function OrganizationsManagementPage() {
         )}
 
         {/* Organizations List */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Organizations</h2>
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Organizations</h2>
           
           {isLoadingOrgs ? (
             <div className="text-center py-8">
-              <div className="text-lg">Loading organizations...</div>
+              <div className="text-base sm:text-lg">Loading organizations...</div>
             </div>
           ) : error ? (
             <div className="text-center py-8">
               <div className="text-red-600">{error}</div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+            <>
+              {/* Mobile Card Layout */}
+              <div className="block sm:hidden space-y-4">
+                {organizations.map((org) => (
+                  <div key={org.id} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center mb-3">
+                      <div 
+                        className="w-4 h-4 rounded-full mr-3" 
+                        style={{ backgroundColor: org.settings.primaryColor || '#3B82F6' }}
+                      ></div>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-gray-900">{org.displayName}</div>
+                        <div className="text-xs text-gray-500">{org.name}</div>
+                      </div>
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        org.isActive 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {org.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+                    
+                    <div className="text-xs text-gray-600 mb-3">
+                      <div>Domain: {org.domain}</div>
+                      <div>Created: {org.createdAt.toLocaleDateString()}</div>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1">
+                      <button
+                        onClick={() => startEdit(org)}
+                        className="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs touch-manipulation"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => openDemographicsModal(org)}
+                        className="bg-purple-500 hover:bg-purple-600 active:bg-purple-700 text-white font-bold py-1 px-2 rounded text-xs touch-manipulation"
+                      >
+                        Demographics
+                      </button>
+                      <button
+                        onClick={() => openSurveyTypesModal(org)}
+                        className="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs touch-manipulation"
+                      >
+                        Survey Types
+                      </button>
+                      <button
+                        onClick={() => openQuestionsModal(org)}
+                        className="bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white font-bold py-1 px-2 rounded text-xs touch-manipulation"
+                      >
+                        Questions
+                      </button>
+                      <button
+                        onClick={() => handleToggleStatus(org.id)}
+                        className={`font-bold py-1 px-2 rounded text-xs touch-manipulation ${
+                          org.isActive
+                            ? 'bg-red-500 hover:bg-red-600 active:bg-red-700 text-white'
+                            : 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-white'
+                        }`}
+                      >
+                        {org.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                      {org.createdBy !== 'system' && (
+                        <button
+                          onClick={() => handleDelete(org.id, org.name)}
+                          className="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs touch-manipulation"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Desktop Table Layout */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -504,7 +581,8 @@ export default function OrganizationsManagementPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+              </div>
+            </>
           )}
 
           {organizations.length === 0 && !isLoadingOrgs && !error && (

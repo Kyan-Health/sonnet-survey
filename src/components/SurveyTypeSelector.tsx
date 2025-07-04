@@ -117,22 +117,22 @@ export default function SurveyTypeSelector({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] sm:max-h-[80vh] overflow-y-auto">
         {/* Header */}
-        <div className="border-b border-gray-200 p-6">
-          <div className="flex justify-between items-center">
+        <div className="border-b border-gray-200 p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                 Configure Survey Types
               </h2>
-              <p className="text-gray-600 mt-1">
+              <p className="text-sm sm:text-base text-gray-600 mt-1">
                 Select which survey types are available for {organization.displayName}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded text-sm"
+              className="bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm touch-manipulation"
             >
               Close
             </button>
@@ -140,40 +140,40 @@ export default function SurveyTypeSelector({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {isLoading ? (
             <div className="text-center py-8">
-              <div className="text-lg">Loading survey types...</div>
+              <div className="text-base sm:text-lg">Loading survey types...</div>
             </div>
           ) : (
             <>
               {/* Statistics */}
-              <div className="mb-6 grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">
+              <div className="mb-4 sm:mb-6 grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-blue-600">
                     {selectedSurveyTypes.length}
                   </div>
-                  <div className="text-sm text-blue-600">Selected Types</div>
+                  <div className="text-xs sm:text-sm text-blue-600">Selected Types</div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-600">
+                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                  <div className="text-xl sm:text-2xl font-bold text-gray-600">
                     {availableSurveyTypes.length}
                   </div>
-                  <div className="text-sm text-gray-600">Available Types</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Available Types</div>
                 </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <div className="text-sm font-bold text-green-600">
+                <div className="bg-green-50 p-3 sm:p-4 rounded-lg col-span-2 md:col-span-1">
+                  <div className="text-xs sm:text-sm font-bold text-green-600 truncate">
                     {defaultSurveyType ? 
                       availableSurveyTypes.find(st => st.id === defaultSurveyType)?.metadata.displayName 
                       : 'None'
                     }
                   </div>
-                  <div className="text-sm text-green-600">Default Type</div>
+                  <div className="text-xs sm:text-sm text-green-600">Default Type</div>
                 </div>
               </div>
 
               {/* Survey Types */}
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {availableSurveyTypes.map((surveyType) => {
                   const isSelected = selectedSurveyTypes.includes(surveyType.id);
                   const isDefault = defaultSurveyType === surveyType.id;
@@ -181,46 +181,48 @@ export default function SurveyTypeSelector({
                   return (
                     <div 
                       key={surveyType.id} 
-                      className={`border rounded-lg p-4 ${
+                      className={`border rounded-lg p-3 sm:p-4 ${
                         isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
                       }`}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start space-x-3 flex-1 min-w-0">
                           <input
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => handleSurveyTypeToggle(surveyType.id)}
-                            className="mt-1"
+                            className="mt-1 touch-manipulation"
                           />
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-3">
-                              <h3 className="text-lg font-semibold text-gray-900">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                              <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
                                 {surveyType.metadata.displayName}
                               </h3>
-                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                surveyType.metadata.category === 'engagement' ? 'bg-blue-100 text-blue-800' :
-                                surveyType.metadata.category === 'burnout' ? 'bg-red-100 text-red-800' :
-                                surveyType.metadata.category === 'wellbeing' ? 'bg-green-100 text-green-800' :
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {surveyType.metadata.category}
-                              </span>
-                              {isDefault && (
-                                <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded">
-                                  Default
+                              <div className="flex flex-wrap gap-2">
+                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                  surveyType.metadata.category === 'engagement' ? 'bg-blue-100 text-blue-800' :
+                                  surveyType.metadata.category === 'burnout' ? 'bg-red-100 text-red-800' :
+                                  surveyType.metadata.category === 'wellbeing' ? 'bg-green-100 text-green-800' :
+                                  'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {surveyType.metadata.category}
                                 </span>
-                              )}
+                                {isDefault && (
+                                  <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded">
+                                    Default
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                            <p className="text-gray-600 mt-1">
+                            <p className="text-sm sm:text-base text-gray-600 mb-2">
                               {surveyType.metadata.description}
                             </p>
                             {surveyType.metadata.researchBasis && (
-                              <p className="text-blue-600 text-sm mt-1">
+                              <p className="text-blue-600 text-xs sm:text-sm mb-2">
                                 Based on: {surveyType.metadata.researchBasis}
                               </p>
                             )}
-                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                               <span>{surveyType.questions.length} questions</span>
                               <span>{surveyType.factors.length} factors</span>
                               {surveyType.metadata.estimatedTime && (
@@ -229,15 +231,15 @@ export default function SurveyTypeSelector({
                             </div>
                           </div>
                         </div>
-                        <div className="flex flex-col space-y-2">
+                        <div className="flex flex-col space-y-2 flex-shrink-0">
                           {isSelected && (
                             <button
                               onClick={() => handleSetDefault(surveyType.id)}
                               disabled={isDefault}
-                              className={`text-xs font-bold py-1 px-2 rounded ${
+                              className={`text-xs font-bold py-1 px-2 rounded touch-manipulation ${
                                 isDefault 
                                   ? 'bg-yellow-100 text-yellow-800 cursor-not-allowed'
-                                  : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                                  : 'bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-white'
                               }`}
                             >
                               {isDefault ? 'Default' : 'Set Default'}
@@ -254,25 +256,25 @@ export default function SurveyTypeSelector({
         </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 p-6">
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-gray-600">
+        <div className="border-t border-gray-200 p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="text-xs sm:text-sm text-gray-600">
               {selectedSurveyTypes.length} of {availableSurveyTypes.length} survey types selected
               {selectedSurveyTypes.length === 0 && (
-                <span className="text-red-600 ml-2">⚠️ At least one survey type must be selected</span>
+                <div className="text-red-600 mt-1 sm:ml-2 sm:mt-0 sm:inline">⚠️ At least one survey type must be selected</div>
               )}
             </div>
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <button
                 onClick={onClose}
-                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 active:bg-gray-700 text-white font-bold py-2 px-4 rounded touch-manipulation"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={isSaving || selectedSurveyTypes.length === 0}
-                className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded"
+                className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded touch-manipulation"
               >
                 {isSaving ? 'Saving...' : 'Save Configuration'}
               </button>

@@ -240,36 +240,36 @@ export default function SurveyPage() {
     }
 
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
+      <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Survey Type</h1>
-            <p className="text-gray-600">
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Choose Survey Type</h1>
+            <p className="text-sm sm:text-base text-gray-600">
               Select which survey you would like to take for {currentOrganization?.displayName}
             </p>
             {completedSurveyTypes.length > 0 && (
-              <p className="text-sm text-green-600 mt-2">
+              <p className="text-xs sm:text-sm text-green-600 mt-2">
                 ✓ You have completed {completedSurveyTypes.length} survey{completedSurveyTypes.length !== 1 ? 's' : ''} already
               </p>
             )}
           </div>
 
           {/* Survey Type Cards */}
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
             {availableTypes.map((surveyType) => (
               <div 
                 key={surveyType.id} 
-                className="bg-white rounded-lg shadow-sm border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer"
+                className="bg-white rounded-lg shadow-sm border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer active:bg-gray-50"
                 onClick={() => handleSurveyTypeSelect(surveyType)}
               >
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <div className="p-4 sm:p-6">
+                  <div className="mb-4">
+                    <div className="mb-3">
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                         {surveyType.metadata.displayName}
                       </h3>
-                      <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
+                      <span className={`inline-flex px-2 py-1 text-xs sm:text-sm font-semibold rounded-full ${
                         surveyType.metadata.category === 'engagement' ? 'bg-blue-100 text-blue-800' :
                         surveyType.metadata.category === 'burnout' ? 'bg-red-100 text-red-800' :
                         surveyType.metadata.category === 'wellbeing' ? 'bg-green-100 text-green-800' :
@@ -280,36 +280,36 @@ export default function SurveyPage() {
                     </div>
                   </div>
                   
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
                     {surveyType.metadata.description}
                   </p>
                   
                   {surveyType.metadata.researchBasis && (
-                    <p className="text-blue-600 text-sm mb-4">
+                    <p className="text-blue-600 text-xs sm:text-sm mb-4">
                       📊 Based on: {surveyType.metadata.researchBasis}
                     </p>
                   )}
                   
-                  <div className="grid grid-cols-3 gap-4 text-center text-sm text-gray-500 mb-4">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center text-xs sm:text-sm text-gray-500 mb-4">
                     <div>
-                      <div className="font-semibold text-gray-900">{surveyType.questions.length}</div>
-                      <div>Questions</div>
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">{surveyType.questions.length}</div>
+                      <div className="text-xs sm:text-sm">Questions</div>
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">{surveyType.factors.length}</div>
-                      <div>Factors</div>
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">{surveyType.factors.length}</div>
+                      <div className="text-xs sm:text-sm">Factors</div>
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">
                         ~{surveyType.metadata.estimatedTime || 10} min
                       </div>
-                      <div>Duration</div>
+                      <div className="text-xs sm:text-sm">Duration</div>
                     </div>
                   </div>
                   
                   <button
                     onClick={() => handleSurveyTypeSelect(surveyType)}
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                    className="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors text-sm sm:text-base touch-manipulation"
                   >
                     Start Survey
                   </button>
@@ -320,19 +320,19 @@ export default function SurveyPage() {
 
           {/* Completed Surveys */}
           {completedSurveyTypes.length > 0 && (
-            <div className="mt-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Completed Surveys</h2>
-              <div className="grid gap-4 md:grid-cols-2">
+            <div className="mt-6 sm:mt-8">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Completed Surveys</h2>
+              <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                 {availableSurveyTypes
                   .filter(st => completedSurveyTypes.includes(st.id))
                   .map((surveyType) => (
-                    <div key={surveyType.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div key={surveyType.id} className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="font-semibold text-gray-900">{surveyType.metadata.displayName}</h3>
-                          <p className="text-sm text-gray-600">Completed</p>
+                          <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{surveyType.metadata.displayName}</h3>
+                          <p className="text-xs sm:text-sm text-gray-600">Completed</p>
                         </div>
-                        <div className="text-green-600">✓</div>
+                        <div className="text-green-600 text-lg sm:text-xl">✓</div>
                       </div>
                     </div>
                   ))}
@@ -347,23 +347,23 @@ export default function SurveyPage() {
   // Show demographics form first
   if (currentStep === 'demographics') {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
+      <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
               {currentSurveyType?.metadata.displayName || 'Survey'}
             </h1>
-            <p className="text-gray-600">Step 1 of 2: Tell us about yourself</p>
+            <p className="text-sm sm:text-base text-gray-600">Step 1 of 2: Tell us about yourself</p>
             {currentSurveyType?.metadata.description && (
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">
                 {currentSurveyType.metadata.description}
               </p>
             )}
             
             {/* Progress Bar */}
             <div className="mt-4">
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <div className="flex justify-between text-xs sm:text-sm text-gray-600 mb-2">
                 <span>Step 1: Demographics</span>
                 <span>25% Complete</span>
               </div>
@@ -380,7 +380,7 @@ export default function SurveyPage() {
               <div className="mt-4">
                 <button
                   onClick={handleBackToSurveySelection}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  className="text-blue-600 hover:text-blue-800 active:text-blue-900 text-xs sm:text-sm font-medium touch-manipulation"
                 >
                   ← Back to Survey Selection
                 </button>
@@ -454,15 +454,15 @@ export default function SurveyPage() {
     }
 
     return (
-      <div className="flex justify-center space-x-2 mt-4 flex-wrap">
+      <div className="flex justify-center gap-1 sm:gap-2 mt-4 px-2">
         {scaleValues.map((rating) => (
           <button
             key={rating}
             onClick={() => handleRatingChange(questionId, rating)}
-            className={`px-3 py-2 rounded-lg border-2 transition-colors text-sm ${
+            className={`min-w-[40px] sm:min-w-[44px] px-1 sm:px-2 py-2 sm:py-3 rounded-lg border-2 transition-colors text-sm sm:text-base font-medium touch-manipulation ${
               currentRating === rating
-                ? 'bg-blue-500 text-white border-blue-500'
-                : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300'
+                ? 'bg-blue-500 text-white border-blue-500 shadow-md'
+                : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300 active:border-blue-400 hover:shadow-sm'
             }`}
             title={ratingScale.labels[rating] || `${rating}`}
           >
@@ -474,23 +474,23 @@ export default function SurveyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
             {currentSurveyType?.metadata.displayName || 'Survey'}
           </h1>
-          <p className="text-gray-600">Step 2 of 2: Survey Questions</p>
+          <p className="text-sm sm:text-base text-gray-600">Step 2 of 2: Survey Questions</p>
           {currentSurveyType?.metadata.description && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">
               {currentSurveyType.metadata.description}
             </p>
           )}
           
           {/* Progress Bar */}
           <div className="mt-4">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <div className="flex justify-between text-xs sm:text-sm text-gray-600 mb-2">
               <span>Section {currentFactor + 1} of {totalFactors}</span>
               <span>{Math.round(totalProgressPercentage)}% Complete</span>
             </div>
@@ -504,27 +504,27 @@ export default function SurveyPage() {
         </div>
 
         {/* Current Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">{currentFactorName}</h2>
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">{currentFactorName}</h2>
           
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {currentQuestions.map((question, index) => (
-              <div key={question.id} className="border-b border-gray-200 pb-6 last:border-b-0">
+              <div key={question.id} className="border-b border-gray-200 pb-4 sm:pb-6 last:border-b-0">
                 <div className="mb-4">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 leading-relaxed">
                     {index + 1}. {question.question}
                   </h3>
                   {question.subFactor && (
-                    <p className="text-sm text-blue-600 font-medium">
+                    <p className="text-xs sm:text-sm text-blue-600 font-medium">
                       {question.subFactor}
                     </p>
                   )}
                 </div>
                 
                 <div className="text-center">
-                  <div className="flex justify-between text-xs text-gray-500 mb-2">
-                    <span>{question.ratingScale?.labels[question.ratingScale.min] || 'Low'}</span>
-                    <span>{question.ratingScale?.labels[question.ratingScale.max] || 'High'}</span>
+                  <div className="flex justify-between text-xs text-gray-500 mb-2 px-1">
+                    <span className="text-left">{question.ratingScale?.labels[question.ratingScale.min] || 'Low'}</span>
+                    <span className="text-right">{question.ratingScale?.labels[question.ratingScale.max] || 'High'}</span>
                   </div>
                   <RatingScale 
                     questionId={question.id} 
@@ -538,18 +538,18 @@ export default function SurveyPage() {
         </div>
 
         {/* Navigation */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex justify-between items-center">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <button
               onClick={currentFactor === 0 ? handleBackToDemographics : handlePrevious}
-              className="px-6 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 active:bg-gray-400 transition-colors text-sm sm:text-base touch-manipulation"
             >
               {currentFactor === 0 ? 
                 (availableSurveyTypes.length > 1 ? 'Back to Survey Selection' : 'Back to Demographics') 
                 : 'Previous'}
             </button>
 
-            <div className="text-sm text-gray-600">
+            <div className="text-xs sm:text-sm text-gray-600 text-center order-first sm:order-none">
               {currentQuestions.filter(q => responses[q.id] !== undefined).length} of {currentQuestions.length} questions answered
             </div>
 
@@ -557,9 +557,9 @@ export default function SurveyPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!canProceed() || isSubmitting}
-                className={`px-6 py-2 rounded-lg font-medium ${
+                className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base touch-manipulation ${
                   canProceed() && !isSubmitting
-                    ? 'bg-green-500 text-white hover:bg-green-600'
+                    ? 'bg-green-500 text-white hover:bg-green-600 active:bg-green-700'
                     : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -569,9 +569,9 @@ export default function SurveyPage() {
               <button
                 onClick={handleNext}
                 disabled={!canProceed()}
-                className={`px-6 py-2 rounded-lg font-medium ${
+                className={`w-full sm:w-auto px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base touch-manipulation ${
                   canProceed()
-                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    ? 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700'
                     : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
               >
