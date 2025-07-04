@@ -164,6 +164,12 @@ export default function AdminDashboard() {
                 Manage Organizations
               </Link>
               <Link
+                href="/admin/survey-types"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Manage Survey Types
+              </Link>
+              <Link
                 href="/admin/users"
                 className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded"
               >

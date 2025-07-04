@@ -14,7 +14,8 @@ export interface SurveyQuestionTemplate {
 
 export interface SurveyResponse {
   questionId: string;
-  rating: number; // 1-5 scale
+  rating: number; // Scale depends on survey type
+  surveyTypeId?: string; // Optional for backward compatibility
 }
 
 export interface DemographicResponse {
@@ -29,14 +30,17 @@ export interface DemographicResponse {
 export type DynamicDemographicResponse = Record<string, string>;
 
 export interface CompletedSurvey {
+  id?: string; // Document ID
   userId: string;
   userEmail: string;
   organizationId: string;
   organizationName: string;
+  surveyTypeId?: string; // New field for multi-survey support (optional for backward compatibility)
   responses: SurveyResponse[];
   demographics: DynamicDemographicResponse; // Updated to use dynamic type
   completedAt: Date;
   sessionId: string;
+  version?: string; // Survey type version when completed
 }
 
 export const SURVEY_QUESTION_TEMPLATES: SurveyQuestionTemplate[] = [

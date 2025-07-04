@@ -14,6 +14,7 @@ import {
 } from '@/lib/organizationService';
 import DemographicManagementModal from '@/components/DemographicManagementModal';
 import SurveyQuestionSelector from '@/components/SurveyQuestionSelector';
+import SurveyTypeSelector from '@/components/SurveyTypeSelector';
 
 export default function OrganizationsManagementPage() {
   const { user, loading } = useAuth();
@@ -29,6 +30,8 @@ export default function OrganizationsManagementPage() {
   const [selectedOrgForDemographics, setSelectedOrgForDemographics] = useState<Organization | null>(null);
   const [showQuestionsModal, setShowQuestionsModal] = useState(false);
   const [selectedOrgForQuestions, setSelectedOrgForQuestions] = useState<Organization | null>(null);
+  const [showSurveyTypesModal, setShowSurveyTypesModal] = useState(false);
+  const [selectedOrgForSurveyTypes, setSelectedOrgForSurveyTypes] = useState<Organization | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -216,6 +219,23 @@ export default function OrganizationsManagementPage() {
   };
 
   const handleQuestionsSave = (updatedOrg: Organization) => {
+    // Update the organization in the local state
+    setOrganizations(prevOrgs => 
+      prevOrgs.map(org => org.id === updatedOrg.id ? updatedOrg : org)
+    );
+  };
+
+  const openSurveyTypesModal = (org: Organization) => {
+    setSelectedOrgForSurveyTypes(org);
+    setShowSurveyTypesModal(true);
+  };
+
+  const closeSurveyTypesModal = () => {
+    setShowSurveyTypesModal(false);
+    setSelectedOrgForSurveyTypes(null);
+  };
+
+  const handleSurveyTypesSave = (updatedOrg: Organization) => {
     // Update the organization in the local state
     setOrganizations(prevOrgs => 
       prevOrgs.map(org => org.id === updatedOrg.id ? updatedOrg : org)
@@ -450,6 +470,12 @@ export default function OrganizationsManagementPage() {
                           Demographics
                         </button>
                         <button
+                          onClick={() => openSurveyTypesModal(org)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded text-xs"
+                        >
+                          Survey Types
+                        </button>
+                        <button
                           onClick={() => openQuestionsModal(org)}
                           className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-2 rounded text-xs"
                         >
@@ -496,6 +522,16 @@ export default function OrganizationsManagementPage() {
           isOpen={showDemographicsModal}
           onClose={closeDemographicsModal}
           onSave={handleDemographicsSave}
+        />
+      )}
+
+      {/* Survey Types Management Modal */}
+      {selectedOrgForSurveyTypes && (
+        <SurveyTypeSelector
+          organization={selectedOrgForSurveyTypes}
+          isOpen={showSurveyTypesModal}
+          onClose={closeSurveyTypesModal}
+          onSave={handleSurveyTypesSave}
         />
       )}
 

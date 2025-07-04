@@ -49,6 +49,15 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
+    // Survey types collection - read for authenticated users, write for admins only
+    match /surveyTypes/{surveyTypeId} {
+      // Authenticated users can read survey types (needed to display available surveys)
+      allow read: if isAuthenticatedUser();
+      
+      // Only admins can create, update, or delete survey types
+      allow write: if isAdmin();
+    }
+    
     // Admin-only collections for analytics (if needed in future)
     match /analytics/{document=**} {
       allow read, write: if isAdmin();

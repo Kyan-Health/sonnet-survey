@@ -19,13 +19,31 @@ export interface Organization {
     customBranding?: boolean;
   };
   demographicQuestions?: DemographicQuestion[]; // Custom demographic questions
-  selectedQuestions?: string[]; // Array of survey question IDs this organization uses
+  selectedQuestions?: string[]; // Array of survey question IDs this organization uses (deprecated - use surveyTypes)
   questionSetVersion?: number; // Version tracking for question changes
   lastQuestionUpdate?: Date; // When questions were last modified
+  // Multi-survey type support
+  availableSurveyTypes?: string[]; // Array of survey type IDs this organization can use
+  defaultSurveyType?: string; // Default survey type ID for new surveys
+  activeSurveyTypes?: { [surveyTypeId: string]: OrganizationSurveyConfig }; // Configuration per survey type
   createdAt: Date;
   updatedAt: Date;
   isActive: boolean;
   createdBy: string; // UID of admin who created it
+}
+
+// Configuration for how an organization uses a specific survey type
+export interface OrganizationSurveyConfig {
+  surveyTypeId: string;
+  selectedQuestionIds?: string[]; // Custom question selection for this survey type
+  isActive: boolean;
+  lastConfigured?: Date;
+  customRatingScale?: unknown; // Override default rating scale
+  schedule?: {
+    frequency?: 'monthly' | 'quarterly' | 'annually' | 'custom';
+    nextScheduled?: Date;
+    lastCompleted?: Date;
+  };
 }
 
 export interface OrganizationUser {

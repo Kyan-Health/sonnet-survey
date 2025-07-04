@@ -1,5 +1,6 @@
-import { getSurveyResponsesByOrganization } from './surveyService';
+import { getSurveyResponsesByOrganization, getSurveyResponsesBySurveyType } from './surveyService';
 import { getAllSurveyQuestions, getAvailableFactors, getQuestionsByFactor, CompletedSurvey } from '@/data/surveyData';
+import { getSurveyType } from './surveyTypeService';
 
 export interface FactorAnalysis {
   factor: string;
@@ -31,7 +32,13 @@ export interface SurveyAnalytics {
   completionRate: number;
   responseDistribution: { [rating: number]: number };
   demographics: Record<string, DemographicBreakdown>; // Dynamic demographics
+  surveyTypeId?: string; // New field for multi-survey analytics
+  surveyTypeName?: string; // Human-readable survey type name
   lastUpdated: Date;
+}
+
+export interface MultiSurveyAnalytics {
+  [surveyTypeId: string]: SurveyAnalytics;
 }
 
 function calculateDistribution(responses: number[]): { [rating: number]: number } {
@@ -153,9 +160,17 @@ function analyzeDemographics(allResponses: CompletedSurvey[]): SurveyAnalytics['
   return demographics;
 }
 
-export async function getSurveyAnalytics(organizationId?: string, organizationName?: string, selectedQuestionIds?: string[]): Promise<SurveyAnalytics> {
+export async function getSurveyAnalytics(
+  organizationId?: string, 
+  organizationName?: string, 
+  selectedQuestionIds?: string[],
+  surveyTypeId?: string
+): Promise<SurveyAnalytics> {
   try {
-    const allResponses = await getSurveyResponsesByOrganization(organizationId);
+    // Get responses - either by survey type or all responses
+    const allResponses = surveyTypeId 
+      ? await getSurveyResponsesBySurveyType(surveyTypeId, organizationId)
+      : await getSurveyResponsesByOrganization(organizationId);
     
     // Filter out responses that don't have the new demographic structure
     const validResponses = allResponses.filter(response => 
@@ -207,6 +222,13 @@ export async function getSurveyAnalytics(organizationId?: string, organizationNa
       ? (actualTotalResponses / expectedTotalResponses) * 100 
       : 0;
 
+    // Get survey type information if provided
+    let surveyTypeName: string | undefined;
+    if (surveyTypeId) {
+      const surveyType = await getSurveyType(surveyTypeId);
+      surveyTypeName = surveyType?.metadata.displayName;
+    }
+
     // Analyze demographics using only valid responses
     const demographics = analyzeDemographics(validResponses);
 
@@ -217,12 +239,116 @@ export async function getSurveyAnalytics(organizationId?: string, organizationNa
       completionRate: Math.round(completionRate * 100) / 100,
       responseDistribution,
       demographics,
+      surveyTypeId,
+      surveyTypeName,
       lastUpdated: new Date()
     };
   } catch (error) {
     console.error('Error generating survey analytics:', error);
     throw new Error('Failed to generate survey analytics');
   }
+}
+
+// Get analytics for multiple survey types
+export async function getMultiSurveyAnalytics(
+  surveyTypeIds: string[],
+  organizationId?: string,
+  organizationName?: string
+): Promise<MultiSurveyAnalytics> {
+  try {
+    const analytics: MultiSurveyAnalytics = {};
+
+    for (const surveyTypeId of surveyTypeIds) {
+      try {
+        const surveyAnalytics = await getSurveyAnalytics(
+          organizationId,
+          organizationName,
+          undefined, // selectedQuestionIds - use survey type defaults
+          surveyTypeId
+        );
+        analytics[surveyTypeId] = surveyAnalytics;
+      } catch (error) {
+        console.error(`Error getting analytics for survey type ${surveyTypeId}:`, error);
+        // Continue with other survey types if one fails
+      }
+    }
+
+    return analytics;
+  } catch (error) {
+    console.error('Error generating multi-survey analytics:', error);
+    throw new Error('Failed to generate multi-survey analytics');
+  }
+}
+
+// Get burnout-specific analytics (for MBI survey type)
+export async function getBurnoutAnalytics(
+  organizationId?: string
+): Promise<{
+  exhaustionScore: number;
+  cynicismScore: number;
+  efficacyScore: number;
+  overallBurnoutRisk: 'Low' | 'Moderate' | 'High';
+  analytics: SurveyAnalytics;
+}> {
+  try {
+    const analytics = await getSurveyAnalytics(
+      organizationId,
+      undefined,
+      undefined,
+      'mbi-burnout'
+    );
+
+    // Calculate dimension scores for MBI
+    const exhaustionFactors = analytics.factorAnalysis.filter(f => f.factor === 'Exhaustion');
+    const cynicismFactors = analytics.factorAnalysis.filter(f => f.factor === 'Cynicism');
+    const efficacyFactors = analytics.factorAnalysis.filter(f => f.factor === 'Professional Efficacy');
+
+    const exhaustionScore = exhaustionFactors.length > 0 ? exhaustionFactors[0].averageScore : 0;
+    const cynicismScore = cynicismFactors.length > 0 ? cynicismFactors[0].averageScore : 0;
+    const efficacyScore = efficacyFactors.length > 0 ? efficacyFactors[0].averageScore : 0;
+
+    // Calculate overall burnout risk (simplified algorithm)
+    let overallBurnoutRisk: 'Low' | 'Moderate' | 'High' = 'Low';
+    
+    if (exhaustionScore >= 4 || cynicismScore >= 4) {
+      overallBurnoutRisk = 'High';
+    } else if (exhaustionScore >= 3 || cynicismScore >= 3 || efficacyScore <= 2) {
+      overallBurnoutRisk = 'Moderate';
+    }
+
+    return {
+      exhaustionScore,
+      cynicismScore,
+      efficacyScore,
+      overallBurnoutRisk,
+      analytics
+    };
+  } catch (error) {
+    console.error('Error generating burnout analytics:', error);
+    throw new Error('Failed to generate burnout analytics');
+  }
+}
+
+// Dynamic rating scale support for analytics
+export function calculateDynamicDistribution(
+  responses: number[],
+  minValue: number = 1,
+  maxValue: number = 5
+): { [rating: number]: number } {
+  const distribution: { [rating: number]: number } = {};
+  
+  // Initialize distribution for the scale range
+  for (let i = minValue; i <= maxValue; i++) {
+    distribution[i] = 0;
+  }
+  
+  responses.forEach(rating => {
+    if (rating >= minValue && rating <= maxValue) {
+      distribution[rating] = (distribution[rating] || 0) + 1;
+    }
+  });
+  
+  return distribution;
 }
 
 export function getScoreCategory(score: number): { category: string; color: string } {
