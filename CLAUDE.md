@@ -240,6 +240,8 @@ Test on these viewport sizes:
 - **Response tracking** - Monitors current responses and limits
 - **Expiration management** - Optional link expiration dates
 - **Mobile responsive** - Works on all devices
+- **Auto-advance flow** - Automatically advances to next question after selection
+- **Confirmation step** - Shows confirmation dialog before final submission
 
 ### Usage
 1. **Create Link**: Admin → Organizations → Survey Links → Create New
@@ -252,6 +254,14 @@ Test on these viewport sizes:
 - `/src/components/SurveyLinkManager.tsx` - Admin interface
 - `/src/app/survey/anonymous/page.tsx` - Anonymous survey page
 - `/src/types/organization.ts` - SurveyLink interface
+
+### User Experience Flow
+1. **Answer Selection** - User selects answer from rating scale
+2. **Auto-advance** - System automatically moves to next question (300ms delay)
+3. **Visual Feedback** - Shows "Moving to next question..." message
+4. **Final Question** - On last question, shows confirmation dialog
+5. **Confirmation** - User can review answers or submit survey
+6. **Completion** - Success message after submission
 
 ### Security
 - UUID-based tokens for security

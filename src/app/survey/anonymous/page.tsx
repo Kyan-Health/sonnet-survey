@@ -23,6 +23,7 @@ function AnonymousSurveyContent() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   
   // Survey state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -120,13 +121,20 @@ function AnonymousSurveyContent() {
       ...prev,
       [questionId]: rating
     }));
-  };
-
-  const handleNext = () => {
+    
+    // Auto-advance to next question if not the last question
     if (surveyType && currentQuestionIndex < surveyType.questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
+      setTimeout(() => {
+        setCurrentQuestionIndex(prev => prev + 1);
+      }, 300); // Small delay to show selection visually
+    } else {
+      // Show confirmation for last question
+      setTimeout(() => {
+        setShowConfirmation(true);
+      }, 300);
     }
   };
+
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
@@ -247,6 +255,38 @@ function AnonymousSurveyContent() {
     return null;
   }
 
+  // Show confirmation dialog
+  if (showConfirmation) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-sm p-8 max-w-lg w-full">
+          <div className="text-center">
+            <div className="text-blue-600 text-6xl mb-6">✓</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to Submit</h2>
+            <p className="text-gray-600 mb-8">
+              You have completed all {surveyType.questions.length} questions. Are you ready to submit your survey?
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg"
+              >
+                Review Answers
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg"
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Survey'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentQuestion = surveyType.questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / surveyType.questions.length) * 100;
   const isLastQuestion = currentQuestionIndex === surveyType.questions.length - 1;
@@ -346,20 +386,9 @@ function AnonymousSurveyContent() {
             <div className="text-sm text-gray-600">
               {currentResponse !== undefined ? (
                 isLastQuestion ? (
-                  <button
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-2 px-6 rounded"
-                  >
-                    {isSubmitting ? 'Submitting...' : 'Submit Survey'}
-                  </button>
+                  <span className="text-green-600 font-semibold">Question completed</span>
                 ) : (
-                  <button
-                    onClick={handleNext}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Next
-                  </button>
+                  <span className="text-blue-600 font-semibold">Moving to next question...</span>
                 )
               ) : (
                 <span className="text-gray-400">Please select an answer</span>
