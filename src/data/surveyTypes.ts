@@ -1188,12 +1188,286 @@ export const COPSOC_II_SHORT_SURVEY: SurveyTypeConfig = {
   ]
 };
 
+// Kyan Engagement Survey Type
+export const KYAN_ENGAGEMENT_SURVEY: SurveyTypeConfig = {
+  id: 'kyan-engagement',
+  metadata: {
+    name: 'kyan-engagement',
+    displayName: 'Kyan Engagement',
+    description: 'Comprehensive employee engagement survey covering leadership, growth, belonging, wellbeing, and organizational commitment',
+    version: '1.0',
+    category: 'engagement',
+    recommendedFrequency: 'Quarterly',
+    estimatedTime: 12
+  },
+  defaultRatingScale: RATING_SCALES.KYAN_ENGAGEMENT,
+  questionTemplates: [
+    // 1. Leadership & Psychological Safety
+    {
+      factor: "Leadership & Psychological Safety",
+      questionTemplate: "My direct manager provides the support and guidance I need to succeed.",
+      order: 1,
+      required: true
+    },
+    {
+      factor: "Leadership & Psychological Safety",
+      questionTemplate: "I feel safe to voice my opinion and share ideas, even when they differ from others, including managers.",
+      order: 2,
+      required: true
+    },
+    {
+      factor: "Leadership & Psychological Safety",
+      questionTemplate: "I have confidence in the vision and direction set by our senior leadership.",
+      order: 3,
+      required: true
+    },
+    {
+      factor: "Leadership & Psychological Safety",
+      questionTemplate: "My direct manager provides regular and constructive feedback that helps me grow.",
+      order: 4,
+      required: true
+    },
+    {
+      factor: "Leadership & Psychological Safety",
+      questionTemplate: "When mistakes happen on my team, they are treated as valuable learning opportunities.",
+      order: 5,
+      required: true
+    },
+    {
+      factor: "Leadership & Psychological Safety",
+      questionTemplate: "Senior leadership communicates openly and transparently about company priorities.",
+      order: 6,
+      required: true
+    },
+    {
+      factor: "Leadership & Psychological Safety",
+      questionTemplate: "I believe senior leadership is genuinely invested in the wellbeing of employees.",
+      order: 7,
+      required: true
+    },
+
+    // 2. Growth, Recognition & Impact
+    {
+      factor: "Growth, Recognition & Impact",
+      questionTemplate: "My role gives me the opportunity to do work that I find personally meaningful.",
+      order: 8,
+      required: true
+    },
+    {
+      factor: "Growth, Recognition & Impact",
+      questionTemplate: "I see clear opportunities to learn new skills and grow professionally at this company.",
+      order: 9,
+      required: true
+    },
+    {
+      factor: "Growth, Recognition & Impact",
+      questionTemplate: "I have the opportunity to use my best skills and strengths frequently.",
+      order: 10,
+      required: true
+    },
+    {
+      factor: "Growth, Recognition & Impact",
+      questionTemplate: "I have had a meaningful conversation about my career development in the last six months.",
+      order: 11,
+      required: true
+    },
+    {
+      factor: "Growth, Recognition & Impact",
+      questionTemplate: "If I do great work, I trust that it will be recognized.",
+      order: 12,
+      required: true
+    },
+
+    // 3. Belonging & Inclusion
+    {
+      factor: "Belonging & Inclusion",
+      questionTemplate: "I feel a genuine sense of belonging at this company.",
+      order: 13,
+      required: true
+    },
+    {
+      factor: "Belonging & Inclusion",
+      questionTemplate: "My immediate team collaborates effectively to achieve our shared goals.",
+      order: 14,
+      required: true
+    },
+    {
+      factor: "Belonging & Inclusion",
+      questionTemplate: "This is an inclusive environment that values and respects diverse perspectives.",
+      order: 15,
+      required: true
+    },
+    {
+      factor: "Belonging & Inclusion",
+      questionTemplate: "I feel respected by my colleagues.",
+      order: 16,
+      required: true
+    },
+    {
+      factor: "Belonging & Inclusion",
+      questionTemplate: "I feel comfortable being my authentic self at work.",
+      order: 17,
+      required: true
+    },
+
+    // 4. Wellbeing & Work-Life Balance
+    {
+      factor: "Wellbeing & Work-Life Balance",
+      questionTemplate: "I am able to maintain a healthy balance between my work and personal life.",
+      order: 18,
+      required: true
+    },
+    {
+      factor: "Wellbeing & Work-Life Balance",
+      questionTemplate: "My workload is challenging but manageable.",
+      order: 19,
+      required: true
+    },
+    {
+      factor: "Wellbeing & Work-Life Balance",
+      questionTemplate: "The company provides resources that genuinely support my wellbeing (mental and physical).",
+      order: 20,
+      required: true
+    },
+    {
+      factor: "Wellbeing & Work-Life Balance",
+      questionTemplate: "My direct manager cares about my wellbeing as a person.",
+      order: 21,
+      required: true
+    },
+    {
+      factor: "Wellbeing & Work-Life Balance",
+      questionTemplate: "I feel encouraged to disconnect from work and take breaks when I need to.",
+      order: 22,
+      required: true
+    },
+
+    // 5. Compensation & Benefits
+    {
+      factor: "Compensation & Benefits",
+      questionTemplate: "I believe my total compensation (salary, bonus, equity) is fair for my role and experience.",
+      order: 23,
+      required: true
+    },
+    {
+      factor: "Compensation & Benefits",
+      questionTemplate: "I believe my compensation is competitive with similar roles at other companies.",
+      order: 24,
+      required: true
+    },
+    {
+      factor: "Compensation & Benefits",
+      questionTemplate: "I am satisfied with the quality and range of our benefits (e.g., health, wellness, retirement).",
+      order: 25,
+      required: true
+    },
+    {
+      factor: "Compensation & Benefits",
+      questionTemplate: "I have a clear understanding of the full value of my total rewards package.",
+      order: 26,
+      required: true
+    },
+    {
+      factor: "Compensation & Benefits",
+      questionTemplate: "Our health and wellness benefits meet my and my family's needs.",
+      order: 27,
+      required: true
+    },
+
+    // 6. Tools & Work Environment
+    {
+      factor: "Tools & Work Environment",
+      questionTemplate: "I have the necessary tools and technology to do my job effectively.",
+      order: 28,
+      required: true
+    },
+    {
+      factor: "Tools & Work Environment",
+      questionTemplate: "My work environment (physical or remote) allows me to focus and be productive.",
+      order: 29,
+      required: true
+    },
+    {
+      factor: "Tools & Work Environment",
+      questionTemplate: "Our internal processes and workflows help me work efficiently.",
+      order: 30,
+      required: true
+    },
+    {
+      factor: "Tools & Work Environment",
+      questionTemplate: "I can easily find the information I need to do my job.",
+      order: 31,
+      required: true
+    },
+    {
+      factor: "Tools & Work Environment",
+      questionTemplate: "I have the flexibility I need to balance working remotely and in the office.",
+      order: 32,
+      required: true
+    },
+
+    // 7. Retention Intent & Commitment
+    {
+      factor: "Retention Intent & Commitment",
+      questionTemplate: "I see myself working at this company one year from now.",
+      order: 33,
+      required: true
+    },
+    {
+      factor: "Retention Intent & Commitment",
+      questionTemplate: "I feel committed to the long-term goals of this company.",
+      order: 34,
+      required: true
+    },
+    {
+      factor: "Retention Intent & Commitment",
+      questionTemplate: "I often think about looking for a job at another company.",
+      order: 35,
+      required: true
+    },
+    {
+      factor: "Retention Intent & Commitment",
+      questionTemplate: "This company inspires me to give my best work every day.",
+      order: 36,
+      required: true
+    },
+    {
+      factor: "Retention Intent & Commitment",
+      questionTemplate: "Senior leadership lives and champions our company values.",
+      order: 37,
+      required: true
+    },
+    {
+      factor: "Retention Intent & Commitment",
+      questionTemplate: "Our company values are clearly reflected in how decisions are made.",
+      order: 38,
+      required: true
+    },
+    {
+      factor: "Retention Intent & Commitment",
+      questionTemplate: "Our values are meaningfully present in day-to-day work and interactions.",
+      order: 39,
+      required: true
+    },
+
+    // 8. eNPS (Employee Net Promoter Score)
+    {
+      factor: "Employee Net Promoter Score",
+      questionTemplate: "On a scale from 0 to 10, how likely are you to recommend this company as a great place to work?",
+      order: 40,
+      required: true,
+      ratingScale: RATING_SCALES.ENPS_SCALE
+    }
+  ]
+};
+
 // Export all survey type configurations
 export const SYSTEM_SURVEY_TYPES = [
   EMPLOYEE_ENGAGEMENT_SURVEY,
   MBI_BURNOUT_SURVEY,
   COPSOC_WELLBEING_SURVEY,
-  COPSOC_II_SHORT_SURVEY
+  COPSOC_II_SHORT_SURVEY,
+  KYAN_ENGAGEMENT_SURVEY
 ];
 
 export default SYSTEM_SURVEY_TYPES;

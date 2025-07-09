@@ -135,6 +135,10 @@ export async function getOrganizationByDomain(domain: string): Promise<Organizat
   }
 }
 
+export async function getOrganization(organizationId: string): Promise<Organization | null> {
+  return await getOrganizationById(organizationId);
+}
+
 export async function getOrganizationById(organizationId: string): Promise<Organization | null> {
   try {
     const orgRef = doc(db, ORGANIZATIONS_COLLECTION, organizationId);

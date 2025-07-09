@@ -83,10 +83,17 @@ Each survey type is defined with:
 3. **Survey Questions** - Dynamic question presentation based on survey type
 4. **Completion** - Tracks completion per survey type per user
 
+### Anonymous Survey Flow
+1. **Link Creation** - Admins create shareable anonymous survey links
+2. **Token Validation** - System validates survey link tokens
+3. **Anonymous Access** - Users complete surveys without authentication
+4. **Response Tracking** - Anonymous responses are associated with organizations
+
 ### Database Collections
 - `organizations` - Organization configuration and settings
 - `surveyTypes` - Survey type definitions and metadata
 - `surveys` - Individual survey responses with survey type ID
+- `surveyLinks` - Anonymous survey links with tokens and configuration
 - `users` - User profiles and admin claims
 
 ### Mobile Responsiveness Strategy
@@ -127,24 +134,46 @@ Each survey type is defined with:
 
 ### Firestore Rules
 ```javascript
-// Survey types - read for authenticated, write for admins
+// Survey types - read for all (needed for anonymous surveys), write for admins
 match /surveyTypes/{surveyTypeId} {
-  allow read: if isAuthenticatedUser();
+  allow read: if true; // Anonymous access required for survey loading
   allow write: if isAdmin();
 }
 
-// Organizations - read for authenticated, write for admins
+// Organizations - read for all (needed for anonymous surveys), write for admins
 match /organizations/{orgId} {
-  allow read: if isAuthenticatedUser();
+  allow read: if true; // Anonymous access required for survey loading
   allow write: if isAdmin();
 }
 
-// Surveys - write own surveys, read for admins/same org
+// Surveys - authenticated users and anonymous users can create
 match /surveys/{surveyId} {
+  // Authenticated users can create their own surveys
   allow create: if isAuthenticatedUser() && isOwner();
-  allow read: if isAdmin() || isSameOrganization();
+  
+  // Anonymous users can create surveys (for anonymous survey links)
+  allow create: if request.auth == null && 
+                   request.resource.data.userId != null &&
+                   request.resource.data.userId is string &&
+                   request.resource.data.userId.matches('anonymous_.*');
+  
+  // Only admins can read surveys
+  allow read: if isAdmin();
+}
+
+// Survey links - for anonymous survey access
+match /surveyLinks/{linkId} {
+  allow read, write: if isAdmin();
+  allow read: if true; // Anonymous access for token validation
 }
 ```
+
+### Anonymous Survey Security
+- **Token-based access**: Each survey link has a unique UUID-based token
+- **Anonymous user IDs**: Generated as `anonymous_${uuidv4()}` for tracking without identification
+- **Organization association**: Anonymous responses are linked to organizations for analytics
+- **No personal data**: Anonymous surveys collect no personally identifiable information
+- **Firestore rules**: Allow anonymous read access to survey types and organizations, create access for anonymous survey responses
 
 ### Admin Claims
 ```javascript
@@ -203,6 +232,35 @@ Test on these viewport sizes:
 2. Check organization filter is working
 3. Confirm user has admin permissions
 
+## 🔗 Anonymous Survey Links
+
+### Key Features
+- **Token-based access** - Unique tokens for each survey link
+- **Organization filtering** - Only shows available survey types
+- **Response tracking** - Monitors current responses and limits
+- **Expiration management** - Optional link expiration dates
+- **Mobile responsive** - Works on all devices
+
+### Usage
+1. **Create Link**: Admin → Organizations → Survey Links → Create New
+2. **Configure**: Set name, survey type, expiration, max responses
+3. **Share**: Copy generated URL: `https://site.com/survey/anonymous?token=abc123`
+4. **Monitor**: Track responses and manage link status
+
+### Implementation Files
+- `/src/lib/surveyLinkService.ts` - Core service functions
+- `/src/components/SurveyLinkManager.tsx` - Admin interface
+- `/src/app/survey/anonymous/page.tsx` - Anonymous survey page
+- `/src/types/organization.ts` - SurveyLink interface
+
+### Security
+- UUID-based tokens for security
+- Anonymous user ID generation
+- Organization association without user tracking
+- Proper Firestore security rules
+
+For detailed documentation, see: `/docs/ANONYMOUS_SURVEY_LINKS.md`
+
 ## 📚 Technical References
 
 - [Next.js App Router](https://nextjs.org/docs/app)
@@ -210,6 +268,7 @@ Test on these viewport sizes:
 - [Firebase v9 SDK](https://firebase.google.com/docs/web/setup)
 - [Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started)
 - [Mobile Web Best Practices](https://developers.google.com/web/fundamentals/design-and-ux/principles)
+- [Anonymous Survey Links Documentation](./docs/ANONYMOUS_SURVEY_LINKS.md)
 
 ---
 

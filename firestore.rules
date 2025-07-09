@@ -20,9 +20,15 @@ service cloud.firestore {
     
     // Survey responses collection
     match /surveys/{surveyId} {
-      // Users can create their own survey responses (organization validation done in app)
+      // Authenticated users can create their own survey responses
       allow create: if isAuthenticatedUser() && 
                        request.auth.uid == request.resource.data.userId;
+      
+      // Allow anonymous users to create survey responses (for anonymous surveys)
+      allow create: if request.auth == null && 
+                       request.resource.data.userId != null &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.userId.matches('anonymous_.*');
       
       // Only admins can read survey responses
       allow read: if isAdmin();
@@ -49,13 +55,22 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
-    // Survey types collection - read for authenticated users, write for admins only
+    // Survey types collection - read for all (needed for anonymous surveys), write for admins only
     match /surveyTypes/{surveyTypeId} {
-      // Authenticated users can read survey types (needed to display available surveys)
-      allow read: if isAuthenticatedUser();
+      // Anyone can read survey types (needed for anonymous surveys and authenticated users)
+      allow read: if true;
       
       // Only admins can create, update, or delete survey types
       allow write: if isAdmin();
+    }
+    
+    // Survey links collection - for anonymous survey access
+    match /surveyLinks/{linkId} {
+      // Admins can read, create, update, and delete survey links
+      allow read, write: if isAdmin();
+      
+      // Allow anonymous access to validate tokens (for anonymous surveys)
+      allow read: if true;
     }
     
     // Admin-only collections for analytics (if needed in future)

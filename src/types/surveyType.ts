@@ -162,6 +162,37 @@ export const RATING_SCALES: Record<string, RatingScale> = {
       2: "Yes, to a certain degree",
       3: "Yes, certainly"
     }
+  },
+  KYAN_ENGAGEMENT: {
+    min: 0,
+    max: 5,
+    type: 'likert',
+    labels: {
+      0: "Strongly Disagree",
+      1: "Disagree",
+      2: "Somewhat Disagree",
+      3: "Somewhat Agree",
+      4: "Agree",
+      5: "Strongly Agree"
+    }
+  },
+  ENPS_SCALE: {
+    min: 0,
+    max: 10,
+    type: 'custom',
+    labels: {
+      0: "0 - Not at all likely",
+      1: "1",
+      2: "2",
+      3: "3",
+      4: "4",
+      5: "5",
+      6: "6",
+      7: "7",
+      8: "8",
+      9: "9",
+      10: "10 - Extremely likely"
+    }
   }
 };
 

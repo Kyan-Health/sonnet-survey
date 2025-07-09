@@ -15,6 +15,7 @@ import {
 import DemographicManagementModal from '@/components/DemographicManagementModal';
 import SurveyQuestionSelector from '@/components/SurveyQuestionSelector';
 import SurveyTypeSelector from '@/components/SurveyTypeSelector';
+import SurveyLinkManager from '@/components/SurveyLinkManager';
 
 export default function OrganizationsManagementPage() {
   const { user, loading } = useAuth();
@@ -32,6 +33,8 @@ export default function OrganizationsManagementPage() {
   const [selectedOrgForQuestions, setSelectedOrgForQuestions] = useState<Organization | null>(null);
   const [showSurveyTypesModal, setShowSurveyTypesModal] = useState(false);
   const [selectedOrgForSurveyTypes, setSelectedOrgForSurveyTypes] = useState<Organization | null>(null);
+  const [showSurveyLinksModal, setShowSurveyLinksModal] = useState(false);
+  const [selectedOrgForSurveyLinks, setSelectedOrgForSurveyLinks] = useState<Organization | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -240,6 +243,16 @@ export default function OrganizationsManagementPage() {
     setOrganizations(prevOrgs => 
       prevOrgs.map(org => org.id === updatedOrg.id ? updatedOrg : org)
     );
+  };
+
+  const openSurveyLinksModal = (org: Organization) => {
+    setSelectedOrgForSurveyLinks(org);
+    setShowSurveyLinksModal(true);
+  };
+
+  const closeSurveyLinksModal = () => {
+    setShowSurveyLinksModal(false);
+    setSelectedOrgForSurveyLinks(null);
   };
 
   if (loading || isCheckingAdmin) {
@@ -459,6 +472,12 @@ export default function OrganizationsManagementPage() {
                         Questions
                       </button>
                       <button
+                        onClick={() => openSurveyLinksModal(org)}
+                        className="bg-teal-500 hover:bg-teal-600 active:bg-teal-700 text-white font-bold py-1 px-2 rounded text-xs touch-manipulation"
+                      >
+                        Survey Links
+                      </button>
+                      <button
                         onClick={() => handleToggleStatus(org.id)}
                         className={`font-bold py-1 px-2 rounded text-xs touch-manipulation ${
                           org.isActive
@@ -559,6 +578,12 @@ export default function OrganizationsManagementPage() {
                           Questions
                         </button>
                         <button
+                          onClick={() => openSurveyLinksModal(org)}
+                          className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-1 px-2 rounded text-xs"
+                        >
+                          Survey Links
+                        </button>
+                        <button
                           onClick={() => handleToggleStatus(org.id)}
                           className={`font-bold py-1 px-2 rounded text-xs ${
                             org.isActive
@@ -620,6 +645,15 @@ export default function OrganizationsManagementPage() {
           isOpen={showQuestionsModal}
           onClose={closeQuestionsModal}
           onSave={handleQuestionsSave}
+        />
+      )}
+
+      {/* Survey Links Management Modal */}
+      {selectedOrgForSurveyLinks && (
+        <SurveyLinkManager
+          organization={selectedOrgForSurveyLinks}
+          isOpen={showSurveyLinksModal}
+          onClose={closeSurveyLinksModal}
         />
       )}
     </div>

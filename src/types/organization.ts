@@ -8,6 +8,25 @@ export interface DemographicQuestion {
   order: number; // Display order
 }
 
+export interface SurveyLink {
+  id: string;
+  organizationId: string;
+  surveyTypeId: string;
+  name: string; // Human-readable name for the link
+  description?: string;
+  token: string; // Unique token for the anonymized link
+  isActive: boolean;
+  expiresAt?: Date;
+  maxResponses?: number;
+  currentResponses: number;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string; // UID of admin who created it
+  allowMultipleResponses?: boolean; // Allow same user to respond multiple times
+  requireDemographics?: boolean; // Require demographic questions
+  customDemographicQuestions?: string[]; // Override org's default demographic questions
+}
+
 export interface Organization {
   id: string;
   name: string;
