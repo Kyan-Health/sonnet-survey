@@ -144,12 +144,12 @@ export default function SurveyTypesManagementPage() {
 
   if (!isUserAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center bg-white rounded-lg shadow-sm p-8 max-w-md">
-          <div className="text-red-600 text-6xl mb-4">⛔</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
-          <p className="text-gray-600 mb-6">You don&apos;t have permission to access admin features.</p>
-          <Link href="/" className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="text-center bg-white rounded-lg shadow-sm p-6 sm:p-8 w-full max-w-md mx-auto">
+          <div className="text-red-600 text-5xl sm:text-6xl mb-4">⛔</div>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
+          <p className="text-sm sm:text-base text-gray-600 mb-6">You don&apos;t have permission to access admin features.</p>
+          <Link href="/" className="inline-block bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-sm sm:text-base touch-manipulation w-full sm:w-auto">
             Back to Home
           </Link>
         </div>

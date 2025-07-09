@@ -197,16 +197,16 @@ export default function SurveyPage() {
 
   if (hasCompleted) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center bg-white rounded-lg shadow-sm p-8 max-w-md">
-          <div className="text-green-600 text-6xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Survey Completed</h2>
-          <p className="text-gray-600 mb-6">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="text-center bg-white rounded-lg shadow-sm p-6 sm:p-8 w-full max-w-md mx-auto">
+          <div className="text-green-600 text-5xl sm:text-6xl mb-4">✓</div>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Survey Completed</h2>
+          <p className="text-sm sm:text-base text-gray-600 mb-6">
             Thank you for your feedback! You have already completed this survey.
           </p>
           <Link
             href="/"
-            className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+            className="inline-block bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-sm sm:text-base touch-manipulation w-full sm:w-auto"
           >
             Back to Home
           </Link>
@@ -221,16 +221,16 @@ export default function SurveyPage() {
     
     if (availableTypes.length === 0) {
       return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center bg-white rounded-lg shadow-sm p-8 max-w-md">
-            <div className="text-green-600 text-6xl mb-4">✓</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">All Surveys Completed</h2>
-            <p className="text-gray-600 mb-6">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6">
+          <div className="text-center bg-white rounded-lg shadow-sm p-6 sm:p-8 w-full max-w-md mx-auto">
+            <div className="text-green-600 text-5xl sm:text-6xl mb-4">✓</div>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">All Surveys Completed</h2>
+            <p className="text-sm sm:text-base text-gray-600 mb-6">
               You have completed all available surveys for your organization.
             </p>
             <Link
               href="/"
-              className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+              className="inline-block bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-sm sm:text-base touch-manipulation w-full sm:w-auto"
             >
               Back to Home
             </Link>
